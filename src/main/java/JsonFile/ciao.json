@@ -1,0 +1,16 @@
+{
+  "@name": "ciao",
+  "@net": "ciao1",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": "ciao",
+      "@transition": "ciao"
+    },
+    {
+      "@direction": "0",
+      "@place": "ciao2",
+      "@transition": "ciao"
+    }
+  ]
+}

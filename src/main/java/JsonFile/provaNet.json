@@ -1,0 +1,16 @@
+{
+  "@name": "net",
+  "@net": "net1",
+  "@pairs": [
+    {
+      "@direction": "-1",
+      "@place": "n1",
+      "@transition": "t"
+    },
+    {
+      "@direction": "-1",
+      "@place": "n2",
+      "@transition": "t"
+    }
+  ]
+}
