@@ -4,6 +4,10 @@ public class Place {
     private String name;
     private int numberOfToken = 0;
 
+    public int getNumberOfToken() {
+        return numberOfToken;
+    }
+
     public String getName() {
         return name;
     }
