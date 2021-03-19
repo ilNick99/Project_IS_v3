@@ -62,4 +62,13 @@ public class Transition {
                 ret = 0;
         return ret;
     }
-}
+    public boolean isIn(String s) {
+        for(String n: idPre){
+            if(s.equals(n)){
+                return true;
+            }
+
+        }
+        return  false;
+        }
+    }

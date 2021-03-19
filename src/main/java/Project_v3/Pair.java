@@ -53,4 +53,8 @@ public class Pair {
         }
         return false;
     }
+
+    public int getWeight() {
+        return weight;
+    }
 }

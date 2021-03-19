@@ -1,0 +1,31 @@
+{
+  "@name": "sc",
+  "@net": "sc1",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": "a",
+      "@transition": "1"
+    },
+    {
+      "@direction": "1",
+      "@place": "b",
+      "@transition": "1"
+    },
+    {
+      "@direction": "0",
+      "@place": "c",
+      "@transition": "1"
+    },
+    {
+      "@direction": "1",
+      "@place": "b",
+      "@transition": "2"
+    },
+    {
+      "@direction": "0",
+      "@place": "d",
+      "@transition": "2"
+    }
+  ]
+}

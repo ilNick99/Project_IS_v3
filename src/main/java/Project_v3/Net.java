@@ -104,6 +104,27 @@ public class Net {
             } else {
                 //I check if the pair is equal than an other one which already exists
                 if (checkPair(new Pair(p, t)) == true) {
+
+                    //this for looks for if the place already exist
+                    for (Place pl : setOfPlace) {
+                        if (placeName.compareTo(pl.getName()) == 0) {
+                            checkPlace = true;
+                            p=pl;
+                            break;
+                        }
+                    }
+                    //this for looks for if the place already exist
+                    for (Transition tr : setOfTrans) {
+                        if (transName.compareTo(tr.getName()) == 0) {
+                            t=tr;
+                            /*if (inOrOut == 1) {
+                                tr.addPre(p.getName());
+                            } else {
+                                tr.addPost(p.getName());
+                            }*/
+                            checkTrans = true;
+                        }
+                    }
                     //with this if I check if the node is a in or an output
                     if (inOrOut == 1) {
                         //if this is an in I add the place to the pre
@@ -113,23 +134,6 @@ public class Net {
                         t.addPost(placeName);
                     }
                     net.add(new Pair(p, t));
-                    //this for looks for if the place already exist
-                    for (Place pl : setOfPlace) {
-                        if (placeName.compareTo(pl.getName()) == 0) {
-                            checkPlace = true;
-                        }
-                    }
-                    //this for looks for if the place already exist
-                    for (Transition tr : setOfTrans) {
-                        if (transName.compareTo(tr.getName()) == 0) {
-                            if (inOrOut == 1) {
-                                tr.addPre(p.getName());
-                            } else {
-                                tr.addPost(p.getName());
-                            }
-                            checkTrans = true;
-                        }
-                    }
                     // 1) if checkPlace and checkTrans are false it means that the places and transitions I want to add have not been found in the sets,
                     // 2) if checkPlace = false and checkTrans = true then it means that I have to add only the transitions in the set
                     // 3) if checkPlace = true and checkTrans = false then it means that I have to add only the place in the set
@@ -340,5 +344,9 @@ public class Net {
             }
         }
         return true;
+    }
+
+    public ArrayList<Pair> getPair(){
+        return net;
     }
 }

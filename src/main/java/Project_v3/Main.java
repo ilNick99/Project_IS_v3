@@ -8,8 +8,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        NetManager manager = new NetManager();
-        manager.menageOption();
+        Manager manager = new Manager();
+        manager.start();
 
 
     }

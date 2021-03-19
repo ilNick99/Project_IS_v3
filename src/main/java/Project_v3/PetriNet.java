@@ -7,14 +7,15 @@ import java.util.*;
 public class PetriNet extends Net {
     public static final String HOW_MANY_TOKEN = "How many tokens do you want this place to have?\n(if you don't want tokens enter 0)";
 
-    private static HashMap<String, Integer> initialMarking = new HashMap<>();
-
+    private static HashMap<Pair, Integer> initialMarking = new HashMap<>();
+    private static ArrayList<Pair> initialMark=new ArrayList<>();
 
     public PetriNet(Net genericNet) {
         super(genericNet);
         addWeight();
         addToken();
         saveInitialMark();
+        simulazione();
     }
 
     public void addWeight() {
@@ -66,7 +67,7 @@ public class PetriNet extends Net {
         boolean again = true;
         int i;
 
-        while(Reader.yesOrNo("You want to add tokens in the Petri's net?")) {
+        while(Reader.yesOrNo("do You want to add tokens in the Petri's net?")) {
             do {
                 i = 0;
                 //Stampo tutte le alternative
@@ -104,10 +105,72 @@ public class PetriNet extends Net {
     }
 
     public void saveInitialMark(){
-        for (Place p: super.getSetOfPlace()) {
-            initialMarking.put(p.getName(), p.getNumberOfToken());
+        for(Pair p: super.getNet()){
+            if(p.getPlace().getNumberOfToken()!=0)
+                initialMarking.put(p,p.getPlace().getNumberOfToken());
+        }
+
+        for (Pair p: super.getPair()){
+            if(p.getPlace().getNumberOfToken()!=0){
+                initialMark.add(p);
+            }
         }
     }
 
+    public HashMap<Pair, Integer> getInitialMarking(){
+    return initialMarking;
+    }
 
-}
+    public void simulazione() {
+
+        ArrayList<Transition> temp = new ArrayList<Transition>();
+        boolean [] visit=new boolean[initialMark.size()];
+        System.out.println("The first marking is given by:");
+        for(int i=0; i<initialMark.size(); i++){
+            System.out.println(initialMark.get(i).getPlace().getName() +" where there are " + initialMark.get(i).getPlace().getNumberOfToken());
+        }
+        int n=0;
+       for(int i=0; i<initialMark.size() ;i++){
+           if(visit[i]==true){
+               continue;
+           }
+           if(initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName())==false) {
+               continue;
+           }
+
+           if(initialMark.get(i).getTrans().sizePre()==1 && initialMark.get(i).getWeight()<=initialMark.get(i).getPlace().getNumberOfToken()){
+               temp.add(initialMark.get(i).getTrans() );
+
+           }else{
+               visit[i]=true;
+               n=initialMark.get(i).getWeight();
+               //ciclo sulle altre coppie
+               for(int j=i+1; j<initialMark.size() && visit[j]==false; j++){
+                   //controllo se l'elemento ha la stessa transizione
+                   if(initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())){
+                       //se è vero controllo se la coppia faccia parte dei pre della transizione
+                       for(String s: initialMark.get(j).getTrans().getIdPre()){
+                           if(initialMark.get(j).getPlace().getName().equals(s) && initialMark.get(j).getWeight()<=initialMark.get(j).getPlace().getNumberOfToken()){
+                               n=n+initialMark.get(j).getWeight();
+
+                              visit[j]=true;
+                           }
+                       }
+                   }
+
+                   }
+
+               }
+           if (n>=initialMark.get(i).getWeight()){
+               temp.add(initialMark.get(i).getTrans());
+           }
+           n=0;
+           }
+
+        for(int i=0; i<temp.size(); i++){
+            System.out.println(temp.get(i).getName());
+        }
+        }
+
+    }
+

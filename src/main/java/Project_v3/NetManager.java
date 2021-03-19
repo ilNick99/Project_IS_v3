@@ -70,6 +70,7 @@ public class NetManager {
     public void addPetriNet(){
         PetriNet newPetriNet = new PetriNet(loadOneNet());
         netList.add(newPetriNet);
+
     }
 
     /**
@@ -80,6 +81,8 @@ public class NetManager {
         do {
             Net n= new Net(Reader.readNotEmpityString(NAME_OF_NET));
             //if the new net is correct we show it to the user and ask if he wants to save it
+
+
             if(checkNet(n) && n.checkTrans() && n.checkConnect()) {
                 showNet(n);
                 System.out.println(THE_NET_IS_CORRECT_WE_ARE_GOING_TO_SAVE_IT);
@@ -250,5 +253,7 @@ public class NetManager {
         int choise = Reader.leggiIntero("choose the network number ", 0, netList.size());
         return netList.get(choise);
     }
-
+    public ArrayList<Net> getNetList(){
+        return netList;
+    }
 }
