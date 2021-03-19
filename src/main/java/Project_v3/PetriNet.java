@@ -124,53 +124,71 @@ public class PetriNet extends Net {
     public void simulazione() {
 
         ArrayList<Transition> temp = new ArrayList<Transition>();
-        boolean [] visit=new boolean[initialMark.size()];
+        boolean[] visit = new boolean[initialMark.size()];
         System.out.println("The first marking is given by:");
-        for(int i=0; i<initialMark.size(); i++){
-            System.out.println(initialMark.get(i).getPlace().getName() +" where there are " + initialMark.get(i).getPlace().getNumberOfToken());
+        for (int i = 0; i < initialMark.size(); i++) {
+            System.out.println(initialMark.get(i).getPlace().getName() + " where there are " + initialMark.get(i).getPlace().getNumberOfToken());
         }
-        int n=0;
-       for(int i=0; i<initialMark.size() ;i++){
-           if(visit[i]==true){
-               continue;
-           }
-           if(initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName())==false) {
-               continue;
-           }
+        int n = 0;
+        for (int i = 0; i < initialMark.size(); i++) {
+            //se la coppia è stat visitata salto in avanti
+            if (visit[i] == true) {
+                continue;
+            }
+            // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
+            if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName()) == false) {
+                continue;
+            }
+            //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
+            if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getPlace().getNumberOfToken()) {
+                temp.add(initialMark.get(i).getTrans());
 
-           if(initialMark.get(i).getTrans().sizePre()==1 && initialMark.get(i).getWeight()<=initialMark.get(i).getPlace().getNumberOfToken()){
-               temp.add(initialMark.get(i).getTrans() );
+            } else {
+                //altrimenti inizio a capire il peso totale in ingresso della transizione
+                visit[i] = true;
+                n = initialMark.get(i).getWeight();
+                //ciclo sulle altre coppie in modo da capire se c'è un'altra coppia in cui è presente la stessa transizione
+                for (int j = i + 1; j < initialMark.size() ; j++) {
 
-           }else{
-               visit[i]=true;
-               n=initialMark.get(i).getWeight();
-               //ciclo sulle altre coppie
-               for(int j=i+1; j<initialMark.size() && visit[j]==false; j++){
-                   //controllo se l'elemento ha la stessa transizione
-                   if(initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())){
-                       //se è vero controllo se la coppia faccia parte dei pre della transizione
-                       for(String s: initialMark.get(j).getTrans().getIdPre()){
-                           if(initialMark.get(j).getPlace().getName().equals(s) && initialMark.get(j).getWeight()<=initialMark.get(j).getPlace().getNumberOfToken()){
-                               n=n+initialMark.get(j).getWeight();
+                    if(visit[j]==true){
+                        continue;
+                    }
+                    //controllo se l'elemento ha la stessa transizione
+                    if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
+                        //se è vero controllo se la coppia faccia parte dei pre della transizione
+                        for (String s : initialMark.get(j).getTrans().getIdPre()) {
+                            if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getPlace().getNumberOfToken()) {
+                              //aggiorno il peso totale
+                                n = n + initialMark.get(j).getWeight();
+                                //indico che ho visitato il nodo
+                                visit[j] = true;
+                            }
+                        }
+                    }
 
-                              visit[j]=true;
-                           }
-                       }
-                   }
+                }
 
-                   }
-
-               }
-           if (n>=initialMark.get(i).getWeight()){
-               temp.add(initialMark.get(i).getTrans());
-           }
-           n=0;
-           }
-
-        for(int i=0; i<temp.size(); i++){
-            System.out.println(temp.get(i).getName());
+            }
+            //se il peso totale è maggiore o uguale a quello richiesto lo aggiungo
+            if (n >= initialMark.get(i).getWeight()) {
+                temp.add(initialMark.get(i).getTrans());
+            }
+            n = 0;
         }
-        }
 
+        //se temp è zero significa che non si sono transizioni abilitate
+        if (temp.size() == 0) {
+            System.out.println("There aren't any transition available ");
+        } else {
+            //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
+            System.out.println("The following transition are available");
+            for (int i = 0; i < temp.size(); i++) {
+                System.out.println((i+1) +") " + temp.get(i).getName());
+            }
+            int risp=Reader.leggiIntero("Insert the number of the transition you want to use0", 1, temp.size());
+
+
+        }
+    }
     }
 
