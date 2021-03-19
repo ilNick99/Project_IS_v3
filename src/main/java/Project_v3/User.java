@@ -3,7 +3,7 @@ package Project_v3;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.*;
+
 import Utility.Reader;
 
 public class User {
@@ -36,7 +36,7 @@ public class User {
         //TODO
      HashMap<Pair, Integer> temp=   net.getInitialMarking();
      ArrayList<Transition> present= new ArrayList<Transition>();
-    for(Pair p: net.getPair()){
+    for(Pair p: net.getPairs()){
         //if the hashsmap contains the pair that means this pair is in it
         if(temp.containsKey(p)){
 if(net.getSetOfTrans().contains(p.getTrans())){

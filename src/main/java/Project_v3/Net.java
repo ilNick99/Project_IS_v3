@@ -346,7 +346,18 @@ public class Net {
         return true;
     }
 
-    public ArrayList<Pair> getPair(){
+    public ArrayList<Pair> getPairs(){
         return net;
+    }
+
+    public Pair getPair(Place p, Transition t){
+
+        for(Pair pa: net){
+            if(p.getName().equals(pa.getPlace().getName())&& t.getName().equals(pa.getTrans().getName())){
+                return pa;
+            }
+        }
+        return  null;
+
     }
 }

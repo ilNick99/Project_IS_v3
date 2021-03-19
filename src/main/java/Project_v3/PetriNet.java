@@ -110,7 +110,7 @@ public class PetriNet extends Net {
                 initialMarking.put(p,p.getPlace().getNumberOfToken());
         }
 
-        for (Pair p: super.getPair()){
+        for (Pair p: super.getPairs()){
             if(p.getPlace().getNumberOfToken()!=0){
                 initialMark.add(p);
             }
@@ -186,8 +186,29 @@ public class PetriNet extends Net {
                 System.out.println((i+1) +") " + temp.get(i).getName());
             }
             int risp=Reader.leggiIntero("Insert the number of the transition you want to use0", 1, temp.size());
+            int weightTotal=0;
+            //ciclo su tutti i pre della transizione
+            for(int i=0; i<temp.get(risp-1).sizePre(); i++){
+                //controllo che il place sia presente nella pre
+                for(Place p: getSetOfPlace()){
+                    //se è uguale aggiorno il numero dei token
+                    if(p.getName().equals(temp.get(risp-1).getName())){
+                        int a=p.getNumberOfToken()- getPair(p,temp.get(risp-1)).getWeight();
+                        //trovo il peso totale per far scattare la transizione
+                        weightTotal=weightTotal+getPair(p,temp.get(risp-1)).getWeight();
+                        p.setToken(a);
+                    }
+                }
+
+                //aggiorno tutti i post della transizione modificando il valore dei loro pesi
+               if(temp.get(risp-1).sizePost()==1){
+                   //al post ci metto la somma degli elementi dei pesi dei pre, è nelle coppie
+                   getPair(getPlace(temp.get(risp-1).getIdPost().get(0)), temp.get(risp-1)).setWeight(weightTotal);
+               }
 
 
+
+            }
         }
     }
     }
