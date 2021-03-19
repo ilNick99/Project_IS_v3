@@ -179,6 +179,7 @@ public class PetriNet extends Net {
         //se temp è zero significa che non si sono transizioni abilitate
         if (temp.size() == 0) {
             System.out.println("There aren't any transition available ");
+
         } else {
             //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
             System.out.println("The following transition are available");
@@ -188,18 +189,18 @@ public class PetriNet extends Net {
             int risp=Reader.leggiIntero("Insert the number of the transition you want to use0", 1, temp.size());
             int weightTotal=0;
             //ciclo su tutti i pre della transizione
-            for(int i=0; i<temp.get(risp-1).sizePre(); i++){
+            for(int i=0; i<temp.get(risp-1).sizePre(); i++) {
                 //controllo che il place sia presente nella pre
-                for(Place p: getSetOfPlace()){
+                for (Place p : getSetOfPlace()) {
                     //se è uguale aggiorno il numero dei token
-                    if(p.getName().equals(temp.get(risp-1).getName())){
-                        int a=p.getNumberOfToken()- getPair(p,temp.get(risp-1)).getWeight();
+                    if (p.getName().equals(temp.get(risp - 1).getName())) {
+                        int a = p.getNumberOfToken() - getPair(p, temp.get(risp - 1)).getWeight();
                         //trovo il peso totale per far scattare la transizione
-                        weightTotal=weightTotal+getPair(p,temp.get(risp-1)).getWeight();
+                        weightTotal = weightTotal + getPair(p, temp.get(risp - 1)).getWeight();
                         p.setToken(a);
                     }
                 }
-
+            }
                 //aggiorno tutti i post della transizione modificando il valore dei loro pesi
                if(temp.get(risp-1).sizePost()==1){
                    //al post ci metto la somma degli elementi dei pesi dei pre, è nelle coppie
@@ -207,9 +208,9 @@ public class PetriNet extends Net {
                }
 
 
-
+            simulazione();
             }
         }
-    }
+
     }
 
