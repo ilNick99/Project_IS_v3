@@ -9,7 +9,7 @@ public class Manager {
     Configurator config = new Configurator();
 
     public void start() throws IOException {
-        int choise = Reader.leggiIntero("choose the mode:\n0) Exit \n2) User mode \n3) Configurator mode", 0, 3);
+        int choise = Reader.leggiIntero("choose the mode:\n0) Exit \n1) User mode \n2) Configurator mode", 0, 2);
         switch (choise){
             case 0:
                 break;

@@ -1,6 +1,7 @@
 package Project_v3;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Transition {
     private String name;
@@ -71,4 +72,12 @@ public class Transition {
         }
         return  false;
         }
+
+    @Override
+    /**
+     * this method return the hashcode of the transition
+     */
+    public int hashCode() {
+        return Objects.hash(name);
+    }
     }

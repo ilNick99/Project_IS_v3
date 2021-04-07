@@ -168,9 +168,9 @@ public class NetManager {
 
         //for every pair in the net get the name of place and name of transition
         for (Pair p: net.getNet()) {
-            String place = p.getPlace().getName();
-            String trans = p.getTrans().getName();
-            int direction = p.getTrans().getInputOutput(p.getPlace().getName());
+            String place = p.getPlaceName();
+            String trans = p.getTransName();
+            int direction = p.getTrans().getInputOutput(p.getPlaceName());
             //add place to arraylist of places
             places.add(place);
             //add transition to arraylist of transitions

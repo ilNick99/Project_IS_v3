@@ -47,7 +47,7 @@ public class PetriNet extends Net {
 
             //ciclo le coppie finche non trovo quella desiderata
             for(i=0; i<super.getNet().size(); i++){
-                if(placeToChange.compareTo(super.getNet().get(i).getPlace().getName())==0 && transToChange.getName().compareTo(super.getNet().get(i).getTrans().getName())==0){
+                if(placeToChange.compareTo(super.getNet().get(i).getPlaceName())==0 && transToChange.getName().compareTo(super.getNet().get(i).getTransName())==0){
                     int newWeight = Reader.leggiInteroConMinimo("Insert the new Weight",1);
                     super.getNet().get(i).setWeight(newWeight);
                     System.out.println("\n");
@@ -117,8 +117,8 @@ public class PetriNet extends Net {
         }
     }
 
-    public HashMap<Pair, Integer> getInitialMarking(){
-    return initialMarking;
+    public ArrayList<Pair> getInitialMarking(){
+    return initialMark;
     }
 
     public void simulazione() {
@@ -127,7 +127,7 @@ public class PetriNet extends Net {
         boolean[] visit = new boolean[initialMark.size()];
         System.out.println("The first marking is given by:");
         for (int i = 0; i < initialMark.size(); i++) {
-            System.out.println(initialMark.get(i).getPlace().getName() + " where there are " + initialMark.get(i).getPlace().getNumberOfToken());
+            System.out.println(initialMark.get(i).getPlaceName() + " where there are " + initialMark.get(i).getToken());
         }
         int n = 0;
         for (int i = 0; i < initialMark.size(); i++) {
@@ -136,11 +136,11 @@ public class PetriNet extends Net {
                 continue;
             }
             // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
-            if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName()) == false) {
+            if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlaceName()) == false) {
                 continue;
             }
             //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
-            if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getPlace().getNumberOfToken()) {
+            if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getToken()) {
                 temp.add(initialMark.get(i).getTrans());
 
             } else {
@@ -157,7 +157,7 @@ public class PetriNet extends Net {
                     if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
                         //se è vero controllo se la coppia faccia parte dei pre della transizione
                         for (String s : initialMark.get(j).getTrans().getIdPre()) {
-                            if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getPlace().getNumberOfToken()) {
+                            if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getToken()) {
                               //aggiorno il peso totale
                                 n = n + initialMark.get(j).getWeight();
                                 //indico che ho visitato il nodo
@@ -186,25 +186,34 @@ public class PetriNet extends Net {
             for (int i = 0; i < temp.size(); i++) {
                 System.out.println((i+1) +") " + temp.get(i).getName());
             }
-            int risp=Reader.leggiIntero("Insert the number of the transition you want to use0", 1, temp.size());
+            int risp=Reader.leggiIntero("Insert the number of the transition you want to use", 1, temp.size())-1;
             int weightTotal=0;
             //ciclo su tutti i pre della transizione
-            for(int i=0; i<temp.get(risp-1).sizePre(); i++) {
+            for(int i=0; i<temp.get(risp).sizePre(); i++) {
                 //controllo che il place sia presente nella pre
                 for (Place p : getSetOfPlace()) {
                     //se è uguale aggiorno il numero dei token
-                    if (p.getName().equals(temp.get(risp - 1).getName())) {
-                        int a = p.getNumberOfToken() - getPair(p, temp.get(risp - 1)).getWeight();
+                    if (p.getName().equals(temp.get(risp).getName())) {
+                        int a = p.getNumberOfToken() - getPair(p, temp.get(risp)).getWeight();
                         //trovo il peso totale per far scattare la transizione
-                        weightTotal = weightTotal + getPair(p, temp.get(risp - 1)).getWeight();
+                        weightTotal = weightTotal + getPair(p, temp.get(risp )).getWeight();
                         p.setToken(a);
                     }
                 }
             }
                 //aggiorno tutti i post della transizione modificando il valore dei loro pesi
-               if(temp.get(risp-1).sizePost()==1){
+               if(temp.get(risp).sizePost()==1){
                    //al post ci metto la somma degli elementi dei pesi dei pre, è nelle coppie
-                   getPair(getPlace(temp.get(risp-1).getIdPost().get(0)), temp.get(risp-1)).setWeight(weightTotal);
+                   getPair(getPlace(temp.get(risp).getIdPost().get(0)), temp.get(risp)).setWeight(weightTotal);
+               }else{
+                   System.out.println("This transition can move the tokens in different places");
+                   for(int i=0; i<temp.get(risp-1).sizePost(); i++){
+                       System.out.println(i+1+") " + temp.get(risp).getIdPost().get(i));
+
+                   }
+                    //elemento è il post che devo modificare
+                   int elem=Reader.leggiIntero("Where do you want to put the token?", 1,temp.get(risp).sizePost() )-1;
+                   getPair(getPlace(temp.get(risp).getIdPost().get(elem)), temp.get(risp)).setWeight(weightTotal);
                }
 
 

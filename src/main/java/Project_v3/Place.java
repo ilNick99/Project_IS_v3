@@ -1,5 +1,7 @@
 package Project_v3;
 
+import java.util.Objects;
+
 public class Place {
     private String name;
     private int numberOfToken = 0;
@@ -22,5 +24,13 @@ public class Place {
 
     public void setToken(int n){
         this.numberOfToken=n;
+    }
+
+    @Override
+    /**
+     * this method return the hashcode of the transition
+     */
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

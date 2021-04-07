@@ -47,8 +47,8 @@ public class Pair {
 
     public boolean compare(Pair toCompare) {
         //check if the place's ID is equal to the toCompare's ID, and then check if the trans'S ID is equal to the toCOmpare'S ID
-        if( (place.getName().compareTo(toCompare.getPlace().getName()) == 0) &&
-                (trans.getName().compareTo(toCompare.getTrans().getName()) == 0)){
+        if( (place.getName().compareTo(toCompare.getPlaceName()) == 0) &&
+                (trans.getName().compareTo(toCompare.getTransName()) == 0)){
             return true;
         }
         return false;
@@ -56,5 +56,18 @@ public class Pair {
 
     public int getWeight() {
         return weight;
+    }
+
+    public String getTransName(){
+
+        return  trans.getName();
+    }
+    public String getPlaceName(){
+
+        return  place.getName();
+    }
+    public int getToken(){
+
+        return  place.getNumberOfToken();
     }
 }
