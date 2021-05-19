@@ -1,4 +1,4 @@
-package Project_v3;
+package main.java.Project_v3;
 
 
 import java.io.FileNotFoundException;

@@ -1,10 +1,10 @@
-package Project_v3;
+package main.java.Project_v3;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import Utility.Reader;
+import main.java.Utility.Reader;
 
 public class User {
 

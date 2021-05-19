@@ -1,9 +1,9 @@
-package Utility;
+package main.java.Utility;
 
-import Project_v3.Net;
-import Project_v3.Pair;
-import Project_v3.Place;
-import Project_v3.Transition;
+import main.java.Project_v3.Net;
+import main.java.Project_v3.Pair;
+import main.java.Project_v3.Place;
+import main.java.Project_v3.Transition;
 import java.util.*;
 
 public class Reader {
