@@ -1,6 +1,8 @@
 package main.java.Utility;
 
 
+import main.java.Project_v3.Net;
+import main.java.Project_v3.Pair;
 import main.java.Project_v3.Place;
 import main.java.Project_v3.Transition;
 
@@ -8,6 +10,12 @@ import java.io.File;
 import java.util.*;
 
 public class IO {
+    public static final String THERE_AREN_T_ANY_TRANSITION_AVAILABLE = "There aren't any transition available ";
+    public static final String THE_FOLLOWING_TRANSITION_ARE_AVAILABLE = "The following transition are available";
+    public static final String INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE = "Insert the number of the transition you want to use";
+    public static final String HOW_MANY_TOKEN = "How many tokens do you want this place to have?\n(if you don't want tokens enter 0)";
+    public static final String WHERE_DO_YOU_WANT_TO_PUT_THE_TOKEN = "Where do you want to put the token?";
+    public static final String THIS_TRANSITION_CAN_MOVE_THE_TOKENS_IN_DIFFERENT_PLACES = "This transition can move the tokens in different places";
     public static final String THERE_AREN_T_ANY_FILES_TO_LOAD = "There aren't any files to load";
     public static final String INSERT_PLACE_S_ID = "Insert place's Name ";
     public static final String INSERT_TRANSITION_S_ID = "Insert transition's Name ";
@@ -33,7 +41,7 @@ public class IO {
     public static final String NO_NORMAL_NET = "There aren't any nets! You have to insert or load a net before adding a Petri Net";
     public static final String JSON_FILE = "src/main/java/JsonFile";
     public static final String JSON_PETRI_FILE = "src/main/java/JsonPetri";
-    public static final String HOW_MANY_TOKEN = "How many tokens do you want this place to have?\n(if you don't want tokens enter 0)";
+   // public static final String HOW_MANY_TOKEN = "How many tokens do you want this place to have?\n(if you don't want tokens enter 0)";
     private final static String ERROR_FORMAT = "Warning: the entered data are in the wrong format.";
     private final static String MINIMUM_ERROR = "Warning: the value must to be grater or equal to ";
     private final static String STRING_EMPTY_ERROR = "Warning: the string entered is empty";
@@ -41,6 +49,12 @@ public class IO {
     private final static String MESSAGES_ALLOWED = "Warning, the value allowed are: ";
     private final static char YES_ANSWER = 'S';
     private final static char NO_ANSWER = 'N';
+    public static final String YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT = "\nYou have to load a net, which one do you want?";
+    public static final String DO_YOU_WANT_TO_LOAD_OTHER_NETS = "Do you want to load other nets?";
+    public static final String INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE = "Insert the number of the net that you want to use";
+    public static final String DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION = "Do you want to make an other simulation?";
+    public static final String MARKING_WITH_TOKEN = "The first marking is given by:";
+    public static final String WHERE_THERE_ARE = " where there are ";
 
     private static Scanner reader = scannerBuild();
 
@@ -189,6 +203,14 @@ public class IO {
         }
 
     }
+    public static void printNet(Iterable<Net> list) {
+        int i = 1;
+
+        for (Net n : list) {
+            IO.print(i + ") " + n.getName());
+            i++;
+        }
+    }
     public static void printTransition(Iterable<Transition> list){
         int i=1;
 
@@ -203,5 +225,18 @@ public class IO {
         for(int i=0; i<list.size();i++){
             IO.print((i+1)+") "+list.get(i));
         }
+    }
+
+    public static void printElementWithToken(ArrayList<Pair> initialMark) {
+        print(MARKING_WITH_TOKEN);
+        printPair(initialMark);
+    }
+
+    public static void printPair(Iterable<Pair> pairs) {
+        for (Pair p: pairs){
+            IO.print(p.getPlace().getName() + WHERE_THERE_ARE + p.getPlace().getNumberOfToken());
+
+        }
+
     }
 }

@@ -1,11 +1,13 @@
 package main.java.Project_v3;
 
+import main.java.Utility.IO;
 import main.java.Utility.Reader;
 
 import java.util.*;
 
 public class PetriNet extends Net {
-    public static final String HOW_MANY_TOKEN = "How many tokens do you want this place to have?\n(if you don't want tokens enter 0)";
+
+
 
     private static HashMap<Pair, Integer> initialMarking = new HashMap<>();
     private static ArrayList<Pair> initialMark=new ArrayList<>();
@@ -13,7 +15,7 @@ public class PetriNet extends Net {
     public PetriNet(Net genericNet) {
         super(genericNet);
         saveInitialMark();
-        simulazione();
+
     }
     public void addWeight(String nameTrans, String placeMod, int weight) {
        /* ArrayList<Transition> transTemp = new ArrayList<>(super.getSetOfTrans());
@@ -170,105 +172,7 @@ public class PetriNet extends Net {
     return initialMark;
     }
 
-    public void simulazione() {
-
-        ArrayList<Transition> temp = new ArrayList<Transition>();
-        boolean[] visit = new boolean[initialMark.size()];
-        System.out.println("The first marking is given by:");
-        for (int i = 0; i < initialMark.size(); i++) {
-            System.out.println(initialMark.get(i).getPlaceName() + " where there are " + initialMark.get(i).getToken());
-        }
-        int n = 0;
-        for (int i = 0; i < initialMark.size(); i++) {
-            //se la coppia è stat visitata salto in avanti
-            if (visit[i] == true) {
-                continue;
-            }
-            // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
-            if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlaceName()) == false) {
-                continue;
-            }
-            //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
-            if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getToken()) {
-                temp.add(initialMark.get(i).getTrans());
-
-            } else {
-                //altrimenti inizio a capire il peso totale in ingresso della transizione
-                visit[i] = true;
-                n = initialMark.get(i).getWeight();
-                //ciclo sulle altre coppie in modo da capire se c'è un'altra coppia in cui è presente la stessa transizione
-                for (int j = i + 1; j < initialMark.size() ; j++) {
-
-                    if(visit[j]==true){
-                        continue;
-                    }
-                    //controllo se l'elemento ha la stessa transizione
-                    if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
-                        //se è vero controllo se la coppia faccia parte dei pre della transizione
-                        for (String s : initialMark.get(j).getTrans().getIdPre()) {
-                            if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getToken()) {
-                              //aggiorno il peso totale
-                                n = n + initialMark.get(j).getWeight();
-                                //indico che ho visitato il nodo
-                                visit[j] = true;
-                            }
-                        }
-                    }
-
-                }
-
-            }
-            //se il peso totale è maggiore o uguale a quello richiesto lo aggiungo
-            if (n >= initialMark.get(i).getWeight()) {
-                temp.add(initialMark.get(i).getTrans());
-            }
-            n = 0;
-        }
-
-        //se temp è zero significa che non si sono transizioni abilitate
-        if (temp.size() == 0) {
-            System.out.println("There aren't any transition available ");
-
-        } else {
-            //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
-            System.out.println("The following transition are available");
-            for (int i = 0; i < temp.size(); i++) {
-                System.out.println((i+1) +") " + temp.get(i).getName());
-            }
-            int risp=Reader.leggiIntero("Insert the number of the transition you want to use", 1, temp.size())-1;
-            int weightTotal=0;
-            //ciclo su tutti i pre della transizione
-            for(int i=0; i<temp.get(risp).sizePre(); i++) {
-                //controllo che il place sia presente nella pre
-                for (Place p : getSetOfPlace()) {
-                    //se è uguale aggiorno il numero dei token
-                    if (p.getName().equals(temp.get(risp).getName())) {
-                        int a = p.getNumberOfToken() - getPair(p, temp.get(risp)).getWeight();
-                        //trovo il peso totale per far scattare la transizione
-                        weightTotal = weightTotal + getPair(p, temp.get(risp )).getWeight();
-                        p.setToken(a);
-                    }
-                }
-            }
-                //aggiorno tutti i post della transizione modificando il valore dei loro pesi
-               if(temp.get(risp).sizePost()==1){
-                   //al post ci metto la somma degli elementi dei pesi dei pre, è nelle coppie
-                   getPair(getPlace(temp.get(risp).getIdPost().get(0)), temp.get(risp)).setWeight(weightTotal);
-               }else{
-                   System.out.println("This transition can move the tokens in different places");
-                   for(int i=0; i<temp.get(risp-1).sizePost(); i++){
-                       System.out.println(i+1+") " + temp.get(risp).getIdPost().get(i));
-
-                   }
-                    //elemento è il post che devo modificare
-                   int elem=Reader.leggiIntero("Where do you want to put the token?", 1,temp.get(risp).sizePost() )-1;
-                   getPair(getPlace(temp.get(risp).getIdPost().get(elem)), temp.get(risp)).setWeight(weightTotal);
-               }
 
 
-            simulazione();
-            }
-        }
-
-    }
+}
 
