@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import main.java.Utility.IO;
 import main.java.Utility.Reader;
 
 public class User {
@@ -20,7 +21,7 @@ public class User {
 
             System.out.println("\nYou have to load a net, which one do you want?");
             do {
-                netM.loadNet();
+                netM.loadNet(IO.JSON_PETRI_FILE);
             }while(Reader.yesOrNo("Do you want to load other nets?"));
 
             for (int i = 0; i < netM.getNetList().size(); i++) {

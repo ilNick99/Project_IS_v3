@@ -1,10 +1,10 @@
 package main.java.Project_v3;
 
-import Utility.Reader;
+import main.java.Utility.Reader;
 
 import java.util.*;
 
-import Utility.Reader;
+
 
 public class Net {
     public static final String INSERT_PLACE_S_ID = "Insert place's Name ";

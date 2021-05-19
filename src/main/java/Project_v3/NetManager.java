@@ -1,8 +1,8 @@
 package main.java.Project_v3;
 
-import Utility.IO;
-import Utility.JsonReader;
-import Utility.JsonWriter;
+import main.java.Utility.IO;
+import main.java.Utility.JsonReader;
+import main.java.Utility.JsonWriter;
 
 
 import java.io.File;
@@ -401,4 +401,7 @@ public class NetManager {
         return netList.get(choise);
     }
 
+    public ArrayList<Net> getNetList(){
+        return netList;
+    }
 }
