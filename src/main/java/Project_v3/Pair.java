@@ -24,6 +24,12 @@ public class Pair {
     public Transition getTrans() {
         return trans;
     }
+    public Pair(String place_name, int token, String trans_name, int direction, int weight) {
+        this.place = new Place(place_name, token);
+        this.trans = new Transition(trans_name);
+        this.trans.addPreOrPost(place_name, direction);
+        this.weight = weight;
+    }
 
 
 
@@ -70,4 +76,5 @@ public class Pair {
 
         return  place.getNumberOfToken();
     }
+
 }

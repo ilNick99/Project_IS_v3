@@ -80,4 +80,10 @@ public class Transition {
     public int hashCode() {
         return Objects.hash(name);
     }
+    public void addPreOrPost(String placeName, int inOut) {
+        if (inOut == 1)
+            idPre.add(placeName);
+        else
+            idPost.add(placeName);
+    }
     }

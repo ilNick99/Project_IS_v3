@@ -21,6 +21,10 @@ public class Place {
     public Place(String _name){
         this.name=_name;
     }
+    public Place(String name_, int token) {
+        this.name = name_;
+        this.numberOfToken = token;
+    }
 
     public void setToken(int n){
         this.numberOfToken=n;
