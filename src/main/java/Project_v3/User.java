@@ -39,7 +39,7 @@ public class User {
         boolean[] visit = new boolean[initialMark.size()];
         IO.printElementWithToken(initialMark);
 
-        initialization(initialMark, temp, visit);
+       temp= pN.initialization();
 
         //se temp è zero significa che non si sono transizioni abilitate
         if (temp.size() == 0) {
@@ -61,7 +61,7 @@ public class User {
         }
     }
 
-    private void initialization(ArrayList<Pair> initialMark, ArrayList<Transition> temp, boolean[] visit) {
+  /*  private void initialization(ArrayList<Pair> initialMark, ArrayList<Transition> temp, boolean[] visit) {
         int n = 0;
         for (int i = 0; i < initialMark.size(); i++) {
             //se la coppia è stat visitata salto in avanti
@@ -97,23 +97,9 @@ public class User {
             }
             n = 0;
         }
-    }
+    }*/
 
-    private int calculateN(ArrayList<Pair> initialMark, boolean[] visit, int n, int i, int j) {
-        //controllo se l'elemento ha la stessa transizione
-        if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
-            //se è vero controllo se la coppia faccia parte dei pre della transizione
-            for (String s : initialMark.get(j).getTrans().getIdPre()) {
-                if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getPlace().getNumberOfToken()) {
-                    //aggiorno il peso totale
-                    n = n + initialMark.get(j).getWeight();
-                    //indico che ho visitato il nodo
-                    visit[j] = true;
-                }
-            }
-        }
-        return n;
-    }
+
 
     private int getWeightTotal(PetriNet pN, ArrayList<Transition> temp, int risp) {
         int weightTotal=0;
