@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import main.java.Utility.IO;
-import main.java.Utility.Reader;
 
 public class User {
 
@@ -22,13 +21,16 @@ public class User {
 
             IO.print(IO.YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT);
             do {
-                netM.loadNet(IO.JSON_PETRI_FILE);
+                //SISTEMA CON JSONMANAGER
+          //      netM.loadNet(IO.JSON_PETRI_FILE);
             }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
-            IO.printNet(netM.getNetList());
+            //VEDI CON JSONMANAGER
+            //IO.printNet(netM.getNetList());
             select=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE, 1, netM.getNetList().size());
 
      selected= (PetriNet) netM.getNetList().get(select-1);
-     simulation(selected, selected.getInitialMarking());
+
+     simulation(selected, selected.getInitialMark());
         } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
     }
 

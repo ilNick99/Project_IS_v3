@@ -1,5 +1,7 @@
 package main.java.Project_v3;
 
+import java.util.ArrayList;
+
 public class Pair {
     private Place place;
     private Transition trans;
@@ -7,23 +9,19 @@ public class Pair {
 
 
 
-    public  Pair(Place place, Transition trans){
+    public Pair(Place place, Transition trans){
+        assert !place.equals(null);
         this.place=place;
         this.trans=trans;
     }
 
-    public Pair(String placeName, Transition trans){
-        this.place=new Place(placeName);
-        this.trans=trans;
-    }
 
-    public Pair(Place place, String transName){
-        this.place=place;
-        this.trans=new Transition(transName);
-    }
     public Transition getTrans() {
+        assert !place.equals(null);
+        assert !trans.equals(null);
         return trans;
     }
+
     public Pair(String place_name, int token, String trans_name, int direction, int weight) {
         this.place = new Place(place_name, token);
         this.trans = new Transition(trans_name);
@@ -33,9 +31,13 @@ public class Pair {
 
 
 
-    public Pair(String place_name, String trans_name, int inOut){
-        this.place = new Place(place_name);
-        this.trans = new Transition(trans_name, inOut);
+    public Pair(Place place, Transition transition, int weight) {
+        assert place != null;
+        assert transition != null;
+        assert weight >= 0;
+        this.place = place;
+        this.trans = transition;
+        this.weight = weight;
     }
     public void setWeight(int weight) {
 
@@ -52,6 +54,7 @@ public class Pair {
      */
 
     public boolean compare(Pair toCompare) {
+        assert !toCompare.compare(null);
         //check if the place's ID is equal to the toCompare's ID, and then check if the trans'S ID is equal to the toCOmpare'S ID
         if( (place.getName().compareTo(toCompare.getPlaceName()) == 0) &&
                 (trans.getName().compareTo(toCompare.getTransName()) == 0)){
@@ -60,21 +63,28 @@ public class Pair {
         return false;
     }
 
-    public int getWeight() {
-        return weight;
-    }
-
     public String getTransName(){
-
+        assert !trans.getName().equals(null);
         return  trans.getName();
     }
     public String getPlaceName(){
-
+        assert !place.getName().equals(null);
         return  place.getName();
     }
-    public int getToken(){
 
-        return  place.getNumberOfToken();
+    public int getNumberOfToken() {
+        return place.getNumberOfToken();
     }
 
+    public String getIdPreviusPlaceByIndex(int i) {
+        return trans.getIdPreviusPlaceByIndex(i);
+    }
+
+    public String getIdPostPlaceByIndex(int i) {
+        return trans.getIdPostPlaceByIndex(i);
+    }
+
+    public int getWeight() {
+        return weight;
+    }
 }

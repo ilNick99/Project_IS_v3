@@ -47,21 +47,20 @@ public class JsonWriter {
      * @return stringJson
      */
     private static String stringNet(Net net) {
+        assert net != net;
         //initalize the Arraylist of pairs of the net
         ArrayList<Pair> pairsList = net.getNet();
 
         //initialize the string  id and name of the net
-        String idNet = net.getID();
         String nameNet = net.getName();
 
         //create json object to add to file
         JSONObject netJson = new JSONObject();
         //add propriety to json
-        netJson.put("@net", idNet);
         netJson.put("@name", nameNet);
 
         //initialize the JsonArray of the pairs of the net
-        JSONArray pairs = new JSONArray();
+        JSONArray pairs = new JSONArray() ;
 
         //for every pair in the net get place and transition
         for (Pair pair: pairsList) {
@@ -108,38 +107,40 @@ public class JsonWriter {
         String name;
         do {
             //get the name of file insert by user
-            name = Reader.ReadString("Insert the name of the file:\n");
+            name = IO.ReadString("Insert the name of the file:\n");
             //add the extension .json to the name file
             name=name+".json";
             //set ctrl false to exit by the loop
             ctrl = false;
             //for every file in the directory check if the string name exist already or not
-            if (pathname!=null) {
-                for (String s: pathname) {
-                    //check if the name input is equal to the string name of file
-                    if (name.equals(s)) {
-                        System.out.println("File already exist, please try again.");
-                        //if the name of file is already in the directory set ctrl true and stay in loop
-                        ctrl = true;
-                    }
+            for (String s: pathname) {
+                //check if the name input is equal to the string name of file
+                if (name.equals(s)) {
+                    System.out.println("File already exist, please try again.");
+                    //if the name of file is already in the directory set ctrl true and stay in loop
+                    ctrl = true;
                 }
             }
         } while (ctrl); //until the ctrl boolean variable is true
         //return the path of directory and name of file
         return path+"/"+name;
     }
-    private static String stringPetriNet(PetriNet net) {
+
+    /**
+     * method to get the Json string of the Petri's net
+     * @param net
+     * @return stringJson
+     */
+    public static String stringPetriNet(PetriNet net) {
         //initalize the Arraylist of pairs of the net
         ArrayList<Pair> pairsList = net.getNet();
 
         //initialize the string  id and name of the net
-        String idNet = net.getID();
         String nameNet = net.getName();
 
         //create json object to add to file
         JSONObject netJson = new JSONObject();
         //add propriety to json
-        netJson.put("@net", idNet);
         netJson.put("@name", nameNet);
 
         //initialize the JsonArray of the pairs of the net
@@ -186,6 +187,10 @@ public class JsonWriter {
         return stringJson;
     }
 
+    /**
+     * method to create a new json file where save the Petri's net and get its pathname
+     * @return pathname
+     */
     private static String makePetriFile() {
         //initialize file object of directory
         File directory = new File(petriPath);
@@ -216,6 +221,10 @@ public class JsonWriter {
         return petriPath+"/"+name;
     }
 
+    /**
+     * method to write a Petri's net on json
+     * @param net
+     */
     public static void writeJsonPetri(PetriNet net) {
         //get the json string of the net to print in the file
         String stringJson = stringPetriNet(net);
