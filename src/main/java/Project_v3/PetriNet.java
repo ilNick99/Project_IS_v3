@@ -54,6 +54,7 @@ public class PetriNet extends Net implements Simulation {
      * Method that allows you to save the initial marking
      */
     public void saveInitialMark() {
+
         for (Pair p : super.getNet()) {
             if (p.getPlace().getNumberOfToken() != 0)
                 initialMarking.put(p, p.getPlace().getNumberOfToken());
@@ -69,60 +70,140 @@ public class PetriNet extends Net implements Simulation {
     public ArrayList<Pair> getInitialMark(){
         return initialMark;
     }
-
-    public ArrayList<Transition> initialization( ) {
+    public ArrayList<Transition >  initialization( ArrayList<Pair> initialSituation){
         ArrayList<Transition> temp=new ArrayList<>();
-        boolean[] visit = new boolean[initialMark.size()];
-        int n = 0;
-        for (int i = 0; i < initialMark.size(); i++) {
+        boolean[] visit = new boolean[initialSituation.size()];
+                for(int i=0; i<initialSituation.size(); i++)        {
+                    if (visit[i] == true) {
+                        continue;
+                    }
+                    // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
+                    if (initialSituation.get(i).getTrans().isIn(initialSituation.get(i).getPlace().getName()) == false) {
+                        continue;
+                    }
+                    //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
+                    if (initialSituation.get(i).getTrans().sizePre() == 1 && initialSituation.get(i).getWeight() <= initialSituation.get(i).getPlace().getNumberOfToken()) {
+                        temp.add(initialSituation.get(i).getTrans());
+
+                    } else {
+                        visit[i]=true;
+                        //devo controllare che la transizione del primo elemento è abilitata
+                        int elementOfTrans=1;
+                        ArrayList<Pair> pairInTheTrans=new ArrayList<>();
+                        //calcolo quanti elementi della trans t sono presenti in intial
+                        for(int j=i+1; j<initialSituation.size(); j++){
+                            if(initialSituation.get(i).getTrans().equals(initialSituation.get(j).getTrans())){
+                                elementOfTrans++;
+                                visit[j]=true;
+                                pairInTheTrans.add(initialSituation.get(j));
+                            }
+                        }
+                        //nel caso in cui si abbiano il numero giusto trans in initial faccio altri controlli faccio altro
+                        if(initialSituation.get(i).getTrans().getIdPre().size()==elementOfTrans){
+                            //modifico i valori dei token se è necessari, se non sono abbastanza la transizione non parte
+                            for(int l=0; l<pairInTheTrans.size(); l++ ){
+                                if(pairInTheTrans.get(l).getWeight()>pairInTheTrans.get(l).getPlace().getNumberOfToken()){
+                                    continue;
+                                }else {
+                                    pairInTheTrans.get(l).getPlace().differenceToken(pairInTheTrans.get(l).getWeight());
+
+                                }
+
+                            }
+                            temp.add(pairInTheTrans.get(i).getTrans());
+                        }else {
+                            continue;
+                        }
+                    }
+                }
+
+        return temp;
+    }
+    public ArrayList<Transition> initialization2( ArrayList<Pair> initialSituation) {
+        ArrayList<Transition> temp=new ArrayList<>();
+        HashMap <Pair, Transition> initial= new HashMap<>();
+
+
+
+        for(int i=0; i<initialSituation.size(); i++){
+            initial.put(initialSituation.get(i), initialSituation.get(i).getTrans());
+        }
+
+        boolean[] visit = new boolean[initialSituation.size()];
+        int number=0;
+        for (int i = 0; i < initialSituation.size(); i++) {
             //se la coppia è stat visitata salto in avanti
             if (visit[i] == true) {
                 continue;
             }
             // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
-            if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName()) == false) {
+            if (initialSituation.get(i).getTrans().isIn(initialSituation.get(i).getPlace().getName()) == false) {
                 continue;
             }
             //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
-            if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getPlace().getNumberOfToken()) {
-                temp.add(initialMark.get(i).getTrans());
+            if (initialSituation.get(i).getTrans().sizePre() == 1 && initialSituation.get(i).getWeight() <= initialSituation.get(i).getPlace().getNumberOfToken()) {
+                temp.add(initialSituation.get(i).getTrans());
 
             } else {
+
+
+
                 //altrimenti inizio a capire il peso totale in ingresso della transizione
                 visit[i] = true;
-                n = initialMark.get(i).getWeight();
-                //ciclo sulle altre coppie in modo da capire se c'è un'altra coppia in cui è presente la stessa transizione
-                for (int j = i + 1; j < initialMark.size() ; j++) {
+                number = initialSituation.get(i).getWeight();
+
+
+               /* //ciclo sulle altre coppie in modo da capire se c'è un'altra coppia in cui è presente la stessa transizione
+                for (int j = i + 1; j < initialSituation.size() ; j++) {
 
                     if(visit[j]==true){
                         continue;
                     }
-                    n = calculateN(initialMark, visit, n, i, j);
 
+                    n = calculateN(initialSituation, visit, n, i, j);
+
+                }*/
+
+                int numberOfElement=calculateN(initialSituation, visit, number, i);
+                if(numberOfElement==0){
+                    continue;
+                }else{
+                    number+=numberOfElement;
                 }
 
             }
             //se il peso totale è maggiore o uguale a quello richiesto lo aggiungo
-            if (n >= initialMark.get(i).getWeight()) {
-                temp.add(initialMark.get(i).getTrans());
+            if (number >= initialSituation.get(i).getWeight()) {
+                temp.add(initialSituation.get(i).getTrans());
             }
-            n = 0;
+            number = 0;
         }
         return temp;
     }
 
-    public int calculateN(ArrayList<Pair> initialMark, boolean[] visit, int n, int i, int j) {
-        //controllo se l'elemento ha la stessa transizione
-        if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
-            //se è vero controllo se la coppia faccia parte dei pre della transizione
-            for (String s : initialMark.get(j).getTrans().getIdPre()) {
-                if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getPlace().getNumberOfToken()) {
-                    //aggiorno il peso totale
-                    n = n + initialMark.get(j).getWeight();
-                    //indico che ho visitato il nodo
-                    visit[j] = true;
+    public int calculateN(ArrayList<Pair> initialMark, boolean[] visit, int n, int i) {
+
+        for (int j = i + 1; j < initialMark.size(); j++) {
+
+            if (visit[j] == true) {
+                continue;
+            }
+            //controllo se l'elemento ha la stessa transizione
+            if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
+                //se è vero controllo se la coppia faccia parte dei pre della transizione
+                for (String s : initialMark.get(j).getTrans().getIdPre()) {
+                    if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getPlace().getNumberOfToken()) {
+                        //aggiorno il peso totale
+                        n = n + initialMark.get(j).getWeight();
+                        //indico che ho visitato il nodo
+                        visit[j] = true;
+                    }else{
+                        return 0;
+                    }
+
                 }
             }
+
         }
         return n;
     }

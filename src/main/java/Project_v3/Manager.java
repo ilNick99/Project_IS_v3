@@ -10,8 +10,8 @@ public class Manager {
     Configurator config = new Configurator();
 
     public void start() throws IOException {
-        int choise = IO.readInteger(IO.CHOOSE_THE_ELEMENT, 0, 2);
-        switch (choise){
+        int choice = IO.readInteger(IO.CHOOSE_THE_ELEMENT, 0, 2);
+        switch (choice){
             case 0:
                 break;
 

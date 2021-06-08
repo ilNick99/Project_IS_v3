@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import main.java.Utility.IO;
+import main.java.Utility.JsonManager;
 
 public class User {
 
@@ -12,25 +13,27 @@ public class User {
 
     //QUESTO METODO HA SENSO DI ESISTERE SE NELLE PROSSIME VERSIONE L'UTENTE POTRà FARE ANCHE ALTRO OLTRE CHE AD AVVIARE LA SIMULAZIONE
     public void operation(NetManager netM) throws FileNotFoundException {
-
+        ArrayList<PetriNet> loadNetPetri=new ArrayList<>();
         //selezione di una rete
         int select;
         PetriNet selected;
         do {
-//per ora è brutto ma faccio così
+            //per ora è brutto ma faccio così
 
             IO.print(IO.YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT);
+
             do {
-                //SISTEMA CON JSONMANAGER
-          //      netM.loadNet(IO.JSON_PETRI_FILE);
+
+                loadNetPetri.add(JsonManager.loadPetriNet());
+
             }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
-            //VEDI CON JSONMANAGER
-            //IO.printNet(netM.getNetList());
-            select=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE, 1, netM.getNetList().size());
 
-     selected= (PetriNet) netM.getNetList().get(select-1);
-
-     simulation(selected, selected.getInitialMark());
+            IO.printNets(loadNetPetri);
+            select=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE, 1, loadNetPetri.size());
+            selected=loadNetPetri.get(select-1);
+           IO.showPetriNet(selected);
+            selected.saveInitialMark();
+     simulation(selected, loadNetPetri.get(select-1).getInitialMark());
         } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
     }
 
@@ -41,7 +44,7 @@ public class User {
         boolean[] visit = new boolean[initialMark.size()];
         IO.printElementWithToken(initialMark);
 
-       temp= pN.initialization();
+       temp= pN.initialization(initialMark);
 
         //se temp è zero significa che non si sono transizioni abilitate
         if (temp.size() == 0) {
@@ -56,8 +59,8 @@ public class User {
 
             int risp=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE, 1, temp.size())-1;
             int weightTotal = getWeightTotal(pN, temp, risp);
-            setPreandPost(pN, temp, risp, weightTotal);
 
+            setPreandPost(pN, temp, risp, weightTotal);
 
             simulation(pN, initialMark);
         }
@@ -104,17 +107,22 @@ public class User {
 
 
     private int getWeightTotal(PetriNet pN, ArrayList<Transition> temp, int risp) {
+
+
         int weightTotal=0;
         //ciclo su tutti i pre della transizione
         for(int i = 0; i< temp.get(risp).sizePre(); i++) {
             //controllo che il place sia presente nella pre
             for (Place p : pN.getSetOfPlace()) {
                 //se è uguale aggiorno il numero dei token
-                if (p.getName().equals(temp.get(risp).getName())) {
-                    int a = p.getNumberOfToken() - pN.getPair(p, temp.get(risp)).getWeight();
-                    //trovo il peso totale per far scattare la transizione
-                    weightTotal = weightTotal + pN.getPair(p, temp.get(risp)).getWeight();
-                    p.setToken(a);
+                for(String s: temp.get(risp).getIdPre()) {
+                    if (p.getName().equals(s)){
+                        //trovo il peso totale per far scattare la transizione
+                        int a = p.getNumberOfToken() - pN.getPair(p, temp.get(risp)).getWeight();
+                        //trovo il peso totale per far scattare la transizione
+                        weightTotal = weightTotal + pN.getPair(p, temp.get(risp)).getWeight();
+                        p.setToken(a);
+                    }
                 }
             }
         }

@@ -105,6 +105,7 @@ public class NetManager {
      */
     public void addPetriNet() {
         PetriNet newPetriNet = new PetriNet(loadOneNet());
+        IO.showPetriNet(newPetriNet);
         newPetriNet.setName(IO.ReadString(IO.NAME_OF_NET));
         while (!checkPetriNetName(newPetriNet.getName())){
             IO.print(IO.SET_NEW_NAME);

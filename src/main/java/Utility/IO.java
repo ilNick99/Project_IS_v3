@@ -1,10 +1,7 @@
 package main.java.Utility;
 
 
-import main.java.Project_v3.Net;
-import main.java.Project_v3.Pair;
-import main.java.Project_v3.Place;
-import main.java.Project_v3.Transition;
+import main.java.Project_v3.*;
 
 import java.io.File;
 import java.util.*;
@@ -448,6 +445,15 @@ public class IO {
         for (Pair p: pairs){
             IO.print(p.getPlace().getName() + WHERE_THERE_ARE + p.getPlace().getNumberOfToken());
 
+        }
+
+    }
+
+    public static void printNets(Iterable<PetriNet> nets) {
+        int i=1;
+        for (Net n: nets){
+            IO.print(i+") " + n.getName());
+        i++;
         }
 
     }
