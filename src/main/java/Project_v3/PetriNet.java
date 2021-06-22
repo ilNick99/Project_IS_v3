@@ -70,6 +70,7 @@ public class PetriNet extends Net implements Simulation {
     public ArrayList<Pair> getInitialMark(){
         return initialMark;
     }
+
     public ArrayList<Transition >  initialization( ArrayList<Pair> initialSituation){
         ArrayList<Transition> temp=new ArrayList<>();
         boolean[] visit = new boolean[initialSituation.size()];
@@ -128,56 +129,10 @@ public class PetriNet extends Net implements Simulation {
         for(int i=0; i<initialSituation.size(); i++){
             initial.put(initialSituation.get(i), initialSituation.get(i).getTrans());
         }
+        for(Pair p: initialSituation){
 
-        boolean[] visit = new boolean[initialSituation.size()];
-        int number=0;
-        for (int i = 0; i < initialSituation.size(); i++) {
-            //se la coppia è stat visitata salto in avanti
-            if (visit[i] == true) {
-                continue;
-            }
-            // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
-            if (initialSituation.get(i).getTrans().isIn(initialSituation.get(i).getPlace().getName()) == false) {
-                continue;
-            }
-            //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
-            if (initialSituation.get(i).getTrans().sizePre() == 1 && initialSituation.get(i).getWeight() <= initialSituation.get(i).getPlace().getNumberOfToken()) {
-                temp.add(initialSituation.get(i).getTrans());
-
-            } else {
-
-
-
-                //altrimenti inizio a capire il peso totale in ingresso della transizione
-                visit[i] = true;
-                number = initialSituation.get(i).getWeight();
-
-
-               /* //ciclo sulle altre coppie in modo da capire se c'è un'altra coppia in cui è presente la stessa transizione
-                for (int j = i + 1; j < initialSituation.size() ; j++) {
-
-                    if(visit[j]==true){
-                        continue;
-                    }
-
-                    n = calculateN(initialSituation, visit, n, i, j);
-
-                }*/
-
-                int numberOfElement=calculateN(initialSituation, visit, number, i);
-                if(numberOfElement==0){
-                    continue;
-                }else{
-                    number+=numberOfElement;
-                }
-
-            }
-            //se il peso totale è maggiore o uguale a quello richiesto lo aggiungo
-            if (number >= initialSituation.get(i).getWeight()) {
-                temp.add(initialSituation.get(i).getTrans());
-            }
-            number = 0;
         }
+
         return temp;
     }
 
