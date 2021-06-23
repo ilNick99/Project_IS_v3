@@ -200,7 +200,84 @@ public class PetriNet extends Net implements Simulation {
         }
         return true;
     }
+    public void initialSituationInTheNet( ArrayList<Pair> initialMark, ArrayList<Transition> temp, boolean[] visit, HashMap<Transition, ArrayList<Pair>> finalTrans) {
+        ArrayList<Pair> pairInTheTrans;
+        for (int i = 0; i < initialMark.size(); i++) {
+            pairInTheTrans = new ArrayList<>();
+            if (visit[i] == true) {
+                continue;
+            }
 
+
+            visit[i] = true;
+
+            // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
+            if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName()) == false) {
+                continue;
+            }
+
+            //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
+            if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getPlace().getNumberOfToken()) {
+                temp.add(initialMark.get(i).getTrans());
+                pairInTheTrans.add(initialMark.get(i));
+                finalTrans.put(initialMark.get(i).getTrans(), pairInTheTrans);
+                //checkTheElementMultipleCase(initialMark, visit, pairInTheTrans, i, 1, true);
+                continue;
+            }
+
+            //significa che la transazione non potrà mai scattare
+            if (initialMark.get(i).getNumberOfToken() > initialMark.get(i).getWeight()) {
+                //devo controllare che la transizione del primo elemento è abilitata
+                int elementOfTrans = 1;
+                pairInTheTrans = new ArrayList<>();
+                boolean errato = true;
+                pairInTheTrans.add(initialMark.get(i));
+
+                if (checkTheElementMultipleCase(initialMark, visit, pairInTheTrans, i, elementOfTrans, errato)) continue;
+
+                //devo controllare se togliendo il peso vado sotto zero
+
+                temp.add(initialMark.get(i).getTrans());
+                finalTrans.put(initialMark.get(i).getTrans(), pairInTheTrans);
+            }
+
+
+
+        }
+    }
+
+
+    public boolean checkTheElementMultipleCase(ArrayList<Pair> initialMark, boolean[] visit, ArrayList<Pair> pairInTheTrans, int i, int elementOfTrans, boolean errato) {
+        //calcolo quanti elementi della trans t sono presenti in intial
+        for (int j = i + 1; j < initialMark.size(); j++) {
+            //se errato è falso significa che non devo fare controlli ma indico già che è visitato
+            if (errato == false) {
+
+                visit[j] = true;
+                continue;
+            }
+
+            if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
+                //se non rispetta questa condizione significa che non si hanno abbastanza elementi totali, non continuo a fare controlli ma pongo gli altri elementi in modo
+                //non ci siano ulteriori controlli
+                if (pairInTheTrans.get(j).getNumberOfToken() < pairInTheTrans.get(j).getWeight()) {
+                    errato = false;
+                    continue;
+                }
+
+                elementOfTrans++;
+                // sumOfEveryTrans=sumOfEveryTrans+initialMark.get(j).getNumberOfToken();
+                visit[j] = true;
+                pairInTheTrans.add(initialMark.get(j));
+            }
+
+        }
+        //ho meno elementi di quelli che dovrei avere passo oltre o se un elemento non era corretto
+        if (elementOfTrans < initialMark.get(i).getTrans().sizePre() || errato == false) {
+            return true;
+        }
+        return false;
+    }
 
 }
 

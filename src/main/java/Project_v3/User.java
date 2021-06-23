@@ -44,7 +44,9 @@ public class User {
         boolean[] visit = new boolean[initialMark.size()];
         ArrayList<Pair> pairInTheTrans = new ArrayList<>();
        HashMap<Transition, ArrayList<Pair>> finalTrans= new HashMap<>();
-        for (int i = 0; i < initialMark.size(); i++) {
+       pN.initialSituationInTheNet(initialMark,temp, visit, finalTrans);
+
+        /*for (int i = 0; i < initialMark.size(); i++) {
             pairInTheTrans = new ArrayList<>();
             if (visit[i] == true) {
                 continue;
@@ -111,44 +113,31 @@ public class User {
 
 
 
-            }
+            }*/
 
             //ho fatto i controlli possibili in pairInTheTrans ho le transazioni che possono scattare
                 if (temp.size() == 0) {
                     IO.print(IO.THERE_AREN_T_ANY_TRANSITION_AVAILABLE);
 
                 } else {
-                    //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
-                    IO.print(IO.THE_FOLLOWING_TRANSITION_ARE_AVAILABLE);
-                    for (int i = 0; i < temp.size(); i++) {
-                        System.out.println((i+1) +") " + temp.get(i).getName());
+                    int risp = whichPostisChosen(temp);
+                    if(risp<0){
+                        //dovrei printare la rete
+                        return;
                     }
-
-                    //mi dice quale transazione devo far scattare
-                    int risp=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE, 1, temp.size())-1;
-
                     var var= finalTrans.get( temp.get(risp));
                     //sposto i token tolti in quelli nei post
                     int weightTotal = getWeightTotal( finalTrans.get(temp.get(risp)));
 
 
-                    //devo modificare gli elementi dei preSottraendo ai token il weight
-                    for(Pair p: finalTrans.get(temp.get(risp))){
-                        p.getPlace().differenceToken(p.getWeight());
-                    }
 
 
 
                     setPreandPost(pN, temp, risp, weightTotal);
-
+                    modifyThePrePair(temp, finalTrans, risp);
                     ArrayList<Pair> newInit=new ArrayList<>();
                     //devo calcolare la nuova situazione iniziale
-                    for (Pair p: pN.getPairs()){
-                        if(p.getPlace().getNumberOfToken()!=0){
-                            System.out.println(p.getNumberOfToken());
-                           newInit.add(p);
-                        }
-                    }
+                    calculateNewInitialSituation(pN, newInit);
 
                     simulation2(pN, newInit);
                 }
@@ -156,8 +145,34 @@ public class User {
 
         }
 
+    private int whichPostisChosen(ArrayList<Transition> temp) {
+        //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
+        IO.print(IO.THE_FOLLOWING_TRANSITION_ARE_AVAILABLE);
+        for (int i = 0; i < temp.size(); i++) {
+            System.out.println((i + 1) + ") " + temp.get(i).getName());
+        }
+        IO.print("If you want to stop the simulatoin press 0");
+        //mi dice quale transazione devo far scattare
+        return IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE, 0, temp.size()) - 1;
+    }
 
+    private void modifyThePrePair(ArrayList<Transition> temp, HashMap<Transition, ArrayList<Pair>> finalTrans, int risp) {
+        //devo modificare gli elementi dei preSottraendo ai token il weight
+        for(Pair p: finalTrans.get(temp.get(risp))){
+            p.getPlace().differenceToken(p.getWeight());
+        }
+    }
 
+    private void calculateNewInitialSituation(PetriNet pN, ArrayList<Pair> newInit) {
+        ArrayList<Place> temporaryPlace= new ArrayList<>();
+        for (Pair p: pN.getPairs()){
+            if(p.getPlace().getNumberOfToken()!=0 && !temporaryPlace.contains(p.getPlace())){
+                System.out.println("Place "+ p.getPlace().getName() + " has " + p.getNumberOfToken() + " token");
+               newInit.add(p);
+               temporaryPlace.add(p.getPlace());
+            }
+        }
+    }
 
 
     public void simulation(PetriNet pN, ArrayList<Pair> initialMark) {
@@ -174,13 +189,8 @@ public class User {
 
         } else {
             //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
-            IO.print(IO.THE_FOLLOWING_TRANSITION_ARE_AVAILABLE);
-            for (int i = 0; i < temp.size(); i++) {
-                System.out.println((i+1) +") " + temp.get(i).getName());
-            }
-
-            int risp=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE, 1, temp.size())-1;
-           // int weightTotal = getWeightTotal( temp, risp);
+            int risp = whichPostisChosen(temp);
+            // int weightTotal = getWeightTotal( temp, risp);
 
             //setPreandPost(pN, temp, risp, weightTotal);
 
