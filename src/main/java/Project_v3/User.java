@@ -18,25 +18,32 @@ public class User {
         //selezione di una rete
         int select;
         PetriNet selected;
-        do {
-            //per ora è brutto ma faccio così
+        int choise=IO.readInteger("What do you want do?\n0)EXIT\n1)Start simulation",0,1 );
+        switch(choise){
+            case 0:
+                break;
+            case 1:
+                do {
+                    //per ora è brutto ma faccio così
+                    IO.print(IO.YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT);
 
-            IO.print(IO.YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT);
+                    do {
 
-            do {
+                        loadNetPetri.add(JsonManager.loadPetriNet());
 
-                loadNetPetri.add(JsonManager.loadPetriNet());
+                    }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
 
-            }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
+                    IO.printNets(loadNetPetri);
+                    select=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE, 1, loadNetPetri.size());
+                    selected=loadNetPetri.get(select-1);
+                    IO.showPetriNet(selected);
+                    selected.saveInitialMark();
+                    simulation2(selected, loadNetPetri.get(select-1).getInitialMark());
+                    //simulazione(selected, selected.getInitialMark());
+                } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
+                break;
+        }
 
-            IO.printNets(loadNetPetri);
-            select=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE, 1, loadNetPetri.size());
-            selected=loadNetPetri.get(select-1);
-           IO.showPetriNet(selected);
-            selected.saveInitialMark();
-     simulation2(selected, loadNetPetri.get(select-1).getInitialMark());
-            //simulazione(selected, selected.getInitialMark());
-        } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
     }
 
     public void simulation2(PetriNet pN, ArrayList<Pair> initialMark) {

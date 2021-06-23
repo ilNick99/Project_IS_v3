@@ -20,15 +20,15 @@ public class Manager {
                     break;
                 case 1:
                     user.operation(manager);
-                    check = IO.yesOrNo("Do you want change the mode?\n");
+                    check = IO.yesOrNo("Do you want close the program?\n");
                     break;
 
                 case 2:
                     config.operation(manager);
-                    check = IO.yesOrNo("Do you want change the mode?\n");
+                    check = IO.yesOrNo("Do you want close the program?\n");
                     break;
             }
-        } while (check);
+        } while (!check);
     }
 
 }
