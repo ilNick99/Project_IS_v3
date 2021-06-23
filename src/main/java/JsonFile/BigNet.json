@@ -1,0 +1,55 @@
+{
+  "@name": "BigNet",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": "n1",
+      "@transition": "t1"
+    },
+    {
+      "@direction": "0",
+      "@place": "n2",
+      "@transition": "t1"
+    },
+    {
+      "@direction": "0",
+      "@place": "n3",
+      "@transition": "t1"
+    },
+    {
+      "@direction": "1",
+      "@place": "n3",
+      "@transition": "t3"
+    },
+    {
+      "@direction": "1",
+      "@place": "n1",
+      "@transition": "t2"
+    },
+    {
+      "@direction": "0",
+      "@place": "n4",
+      "@transition": "t2"
+    },
+    {
+      "@direction": "1",
+      "@place": "n4",
+      "@transition": "t3"
+    },
+    {
+      "@direction": "0",
+      "@place": "n5",
+      "@transition": "t3"
+    },
+    {
+      "@direction": "1",
+      "@place": "n2",
+      "@transition": "t4"
+    },
+    {
+      "@direction": "0",
+      "@place": "n1",
+      "@transition": "t4"
+    }
+  ]
+}
