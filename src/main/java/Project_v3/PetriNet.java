@@ -200,22 +200,33 @@ public class PetriNet extends Net implements Simulation {
         }
         return true;
     }
+
+    /**
+     * this method check all the differnt case in  a Petri's Net in order to decide which transitions can work
+     * @param initialMark, this parameter identify the initial situazion in that moment and it doesn't always indicate che initial mark of the net
+     * @param temp the arraylist where we put the transition that can be moved
+     * @param visit this array avoid to check pair that we have already checked
+     * @param finalTrans we put the element that will be shows to the user, who has to choose which one has to work
+     */
     public void initialSituationInTheNet( ArrayList<Pair> initialMark, ArrayList<Transition> temp, boolean[] visit, HashMap<Transition, ArrayList<Pair>> finalTrans) {
         ArrayList<Pair> pairInTheTrans;
         for (int i = 0; i < initialMark.size(); i++) {
+            //first of all we check if the pair has already checked
             pairInTheTrans = new ArrayList<>();
             if (visit[i] == true) {
                 continue;
             }
 
-
+            //we put visit true, so in the future this pair will not be check again
             visit[i] = true;
 
+            //if the place isn't in the precs of the transition, that isn't usefull
             // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
             if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName()) == false) {
                 continue;
             }
 
+            //if there is only and there are enough token the transition is add to temp and to th other elemet
             //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
             if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getPlace().getNumberOfToken()) {
                 temp.add(initialMark.get(i).getTrans());
@@ -225,17 +236,18 @@ public class PetriNet extends Net implements Simulation {
                 continue;
             }
 
+            //we check if there are enough token in the transition, in the opposite case there the transition can't work
             //significa che la transazione non potrà mai scattare
             if (initialMark.get(i).getNumberOfToken() > initialMark.get(i).getWeight()) {
-                //devo controllare che la transizione del primo elemento è abilitata
                 int elementOfTrans = 1;
                 pairInTheTrans = new ArrayList<>();
                 boolean errato = true;
                 pairInTheTrans.add(initialMark.get(i));
 
+                //we check if the other element in the initial mark that refers to the same transition are correct
                 if (checkTheElementMultipleCase(initialMark, visit, pairInTheTrans, i, elementOfTrans, errato)) continue;
 
-                //devo controllare se togliendo il peso vado sotto zero
+
 
                 temp.add(initialMark.get(i).getTrans());
                 finalTrans.put(initialMark.get(i).getTrans(), pairInTheTrans);

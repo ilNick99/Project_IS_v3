@@ -11,20 +11,24 @@ public class User {
 
 
 
-
-    //QUESTO METODO HA SENSO DI ESISTERE SE NELLE PROSSIME VERSIONE L'UTENTE POTRà FARE ANCHE ALTRO OLTRE CHE AD AVVIARE LA SIMULAZIONE
-    public void operation(NetManager netM) throws FileNotFoundException {
+    /**
+     * In this method there are all the action that the user can do. This method allows to do the correct action
+     * @param netM we pass the NetManager because that can load the net which will be use
+     * @throws FileNotFoundException
+     */
+     public void operation(NetManager netM) throws FileNotFoundException {
         ArrayList<PetriNet> loadNetPetri=new ArrayList<>();
-        //selezione di una rete
+
         int select;
         PetriNet selected;
-        int choise=IO.readInteger("What do you want do?\n0)EXIT\n1)Start simulation",0,1 );
+        int choise=IO.readInteger(IO.WHAT_DO_YOU_WANT_DO_0_EXIT_1_START_SIMULATION,0,1 );
+      //this switch manage the operations
         switch(choise){
             case 0:
                 break;
             case 1:
                 do {
-                    //per ora è brutto ma faccio così
+                //the user decides which nets he wants to load
                     IO.print(IO.YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT);
 
                     do {
@@ -34,93 +38,48 @@ public class User {
                     }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
 
                     IO.printNets(loadNetPetri);
-                    select=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE, 1, loadNetPetri.size());
-                    selected=loadNetPetri.get(select-1);
-                    IO.showPetriNet(selected);
-                    selected.saveInitialMark();
-                    simulation2(selected, loadNetPetri.get(select-1).getInitialMark());
+
                     //simulazione(selected, selected.getInitialMark());
                 } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
                 break;
+                //after the load the user can simulate the net
+            case 2:
+                if(loadNetPetri.size()==0){
+                    IO.print(IO.THERE_AREN_T_ANY_NETS_LOADED_YOU_HAVE_TO_LOAD_ONE_NET_BEFORE_THE_SIMULATION);
+                }else {
+                   //the user have to choosen one net
+                    IO.printNets(loadNetPetri);
+                    select = IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE, 1, loadNetPetri.size());
+                    selected = loadNetPetri.get(select - 1);
+                   //we shows the net
+                    IO.showPetriNet(selected);
+                    selected.saveInitialMark();
+                    //we start the simulation
+                    simulation(selected, loadNetPetri.get(select - 1).getInitialMark());
+                }
+                break;
+
         }
 
     }
 
-    public void simulation2(PetriNet pN, ArrayList<Pair> initialMark) {
+    /**
+     * this method allows to simulate the actions of the Petri's net
+     * @param pN this is the net that the user had choose
+     * @param initialMark this is the initial mark or in the case of recursive option is the initial situazion in that time
+     */
+    public void simulation(PetriNet pN, ArrayList<Pair> initialMark) {
+        //in the we put the transition that can be chosen
         ArrayList<Transition> temp = new ArrayList<Transition>();
+        //visit avoid to check elements that we have already checked
         boolean[] visit = new boolean[initialMark.size()];
+
         ArrayList<Pair> pairInTheTrans = new ArrayList<>();
        HashMap<Transition, ArrayList<Pair>> finalTrans= new HashMap<>();
+       //initial situazion give us the possibile element
        pN.initialSituationInTheNet(initialMark,temp, visit, finalTrans);
 
-        /*for (int i = 0; i < initialMark.size(); i++) {
-            pairInTheTrans = new ArrayList<>();
-            if (visit[i] == true) {
-                continue;
-            }
 
-
-            visit[i] = true;
-
-            // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
-            if (initialMark.get(i).getTrans().isIn(initialMark.get(i).getPlace().getName()) == false) {
-                continue;
-            }
-
-            //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
-            if (initialMark.get(i).getTrans().sizePre() == 1 && initialMark.get(i).getWeight() <= initialMark.get(i).getPlace().getNumberOfToken()) {
-                temp.add(initialMark.get(i).getTrans());
-                pairInTheTrans.add(initialMark.get(i));
-                finalTrans.put(initialMark.get(i).getTrans(), pairInTheTrans);
-                continue;
-            }
-
-            //significa che la transazione non potrà mai scattare
-            if (initialMark.get(i).getNumberOfToken() > initialMark.get(i).getWeight()) {
-                //devo controllare che la transizione del primo elemento è abilitata
-                int elementOfTrans = 1;
-                //int sumOfEveryTrans=initialMark.get(i).getNumberOfToken();
-               pairInTheTrans = new ArrayList<>();
-                boolean errato = true;
-                pairInTheTrans.add(initialMark.get(i));
-                //calcolo quanti elementi della trans t sono presenti in intial
-                for (int j = i + 1; j < initialMark.size(); j++) {
-                    //se errato è falso significa che non devo fare controlli ma indico già che è visitato
-                    if (errato == false) {
-
-                        visit[j] = true;
-                        continue;
-                    }
-
-                    if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
-                        //se non rispetta questa condizione significa che non si hanno abbastanza elementi totali, non continuo a fare controlli ma pongo gli altri elementi in modo
-                        //non ci siano ulteriori controlli
-                        if (pairInTheTrans.get(j).getNumberOfToken() < pairInTheTrans.get(j).getWeight()) {
-                            errato = false;
-                            continue;
-                        }
-
-                        elementOfTrans++;
-                        // sumOfEveryTrans=sumOfEveryTrans+initialMark.get(j).getNumberOfToken();
-                        visit[j] = true;
-                        pairInTheTrans.add(initialMark.get(j));
-                    }
-
-                }
-                //ho meno elementi di quelli che dovrei avere passo oltre o se un elemento non era corretto
-                if (elementOfTrans < initialMark.get(i).getTrans().sizePre() || errato == false) {
-                    continue;
-                }
-
-                //devo controllare se togliendo il peso vado sotto zero
-
-                temp.add(initialMark.get(i).getTrans());
-                finalTrans.put(initialMark.get(i).getTrans(), pairInTheTrans);
-            }
-
-
-
-            }*/
 
             //ho fatto i controlli possibili in pairInTheTrans ho le transazioni che possono scattare
                 if (temp.size() == 0) {
@@ -146,7 +105,7 @@ public class User {
                     //devo calcolare la nuova situazione iniziale
                     calculateNewInitialSituation(pN, newInit);
 
-                    simulation2(pN, newInit);
+                    simulation(pN, newInit);
                 }
 
 
@@ -182,28 +141,7 @@ public class User {
     }
 
 
-    public void simulation(PetriNet pN, ArrayList<Pair> initialMark) {
 
-        ArrayList<Transition> temp = new ArrayList<Transition>();
-        boolean[] visit = new boolean[initialMark.size()];
-        IO.printElementWithToken(initialMark);
-
-       temp= pN.initialization(initialMark);
-
-        //se temp è zero significa che non si sono transizioni abilitate
-        if (temp.size() == 0) {
-            IO.print(IO.THERE_AREN_T_ANY_TRANSITION_AVAILABLE);
-
-        } else {
-            //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
-            int risp = whichPostisChosen(temp);
-            // int weightTotal = getWeightTotal( temp, risp);
-
-            //setPreandPost(pN, temp, risp, weightTotal);
-
-            simulation(pN, initialMark);
-        }
-    }
 
     private int getWeightTotal( ArrayList<Pair> temp) {
 
