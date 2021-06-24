@@ -21,13 +21,20 @@ public class User {
 
         int select;
         PetriNet selected;
-        int choise=IO.readInteger(IO.WHAT_DO_YOU_WANT_DO_0_EXIT_1_START_SIMULATION,0,1 );
-      //this switch manage the operations
-        switch(choise){
+
+         boolean check=false;
+         int choise = 0;
+       //this switch manage the operations
+         do {
+             choise=IO.readInteger(IO.WHAT_DO_YOU_WANT_DO_0_EXIT_1_START_SIMULATION,0,2 );
+
+
+             switch(choise){
             case 0:
+                check=true;
                 break;
             case 1:
-                do {
+
                 //the user decides which nets he wants to load
                     IO.print(IO.YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT);
 
@@ -38,9 +45,10 @@ public class User {
                     }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
 
                     IO.printNets(loadNetPetri);
+                check = IO.yesOrNo("Do you want close the program?\n");
 
-                    //simulazione(selected, selected.getInitialMark());
-                } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
+                //simulazione(selected, selected.getInitialMark());
+               // } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
                 break;
                 //after the load the user can simulate the net
             case 2:
@@ -57,10 +65,12 @@ public class User {
                     //we start the simulation
                     simulation(selected, loadNetPetri.get(select - 1).getInitialMark());
                 }
+                check = IO.yesOrNo("Do you want close the program?\n");
+
                 break;
 
         }
-
+         } while (!check );
     }
 
     /**
@@ -70,37 +80,36 @@ public class User {
      */
     public void simulation(PetriNet pN, ArrayList<Pair> initialMark) {
         //in the we put the transition that can be chosen
-        ArrayList<Transition> temp = new ArrayList<Transition>();
+        ArrayList<Transition> transitionThatCanWork = new ArrayList<Transition>();
         //visit avoid to check elements that we have already checked
-        boolean[] visit = new boolean[initialMark.size()];
 
         ArrayList<Pair> pairInTheTrans = new ArrayList<>();
        HashMap<Transition, ArrayList<Pair>> finalTrans= new HashMap<>();
        //initial situazion give us the possibile element
-       pN.initialSituationInTheNet(initialMark,temp, visit, finalTrans);
+       pN.initialSituationInTheNet(initialMark, transitionThatCanWork, finalTrans);
 
 
 
             //ho fatto i controlli possibili in pairInTheTrans ho le transazioni che possono scattare
-                if (temp.size() == 0) {
+                if (transitionThatCanWork.size() == 0) {
                     IO.print(IO.THERE_AREN_T_ANY_TRANSITION_AVAILABLE);
 
                 } else {
-                    int risp = whichPostisChosen(temp);
+                    int risp = whichPostisChosen(transitionThatCanWork);
                     if(risp<0){
                         //dovrei printare la rete
                         return;
                     }
-                    var var= finalTrans.get( temp.get(risp));
+                    var var= finalTrans.get( transitionThatCanWork.get(risp));
                     //sposto i token tolti in quelli nei post
-                    int weightTotal = getWeightTotal( finalTrans.get(temp.get(risp)));
+                    int weightTotal = getWeightTotal( finalTrans.get(transitionThatCanWork.get(risp)));
 
 
 
 
 
-                    setPreandPost(pN, temp, risp, weightTotal);
-                    modifyThePrePair(temp, finalTrans, risp);
+                    setPreandPost(pN, transitionThatCanWork, risp, weightTotal);
+                    modifyThePrePair(transitionThatCanWork, finalTrans, risp);
                     ArrayList<Pair> newInit=new ArrayList<>();
                     //devo calcolare la nuova situazione iniziale
                     calculateNewInitialSituation(pN, newInit);

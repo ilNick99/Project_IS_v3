@@ -2,7 +2,7 @@ package main.java.Project_v3;
 
 import java.util.*;
 
-public class PetriNet extends Net implements Simulation {
+public class PetriNet extends Net {
 
 
 
@@ -71,97 +71,8 @@ public class PetriNet extends Net implements Simulation {
         return initialMark;
     }
 
-    public ArrayList<Transition >  initialization( ArrayList<Pair> initialSituation){
-        ArrayList<Transition> temp=new ArrayList<>();
-        boolean[] visit = new boolean[initialSituation.size()];
-                for(int i=0; i<initialSituation.size(); i++)        {
-                    if (visit[i] == true) {
-                        continue;
-                    }
-                    // se il posto non è nei predecessori della transizione pur avendo dei token viene saltata perchè non contribuisce allo scatto
-                    if (initialSituation.get(i).getTrans().isIn(initialSituation.get(i).getPlace().getName()) == false) {
-                        continue;
-                    }
-                    //se si ha un unico pre e si hanno abbastanza token la transizione viene subito aggiunta
-                    if (initialSituation.get(i).getTrans().sizePre() == 1 && initialSituation.get(i).getWeight() <= initialSituation.get(i).getPlace().getNumberOfToken()) {
-                        temp.add(initialSituation.get(i).getTrans());
-
-                    } else {
-                        visit[i]=true;
-                        //devo controllare che la transizione del primo elemento è abilitata
-                        int elementOfTrans=1;
-                        ArrayList<Pair> pairInTheTrans=new ArrayList<>();
-                        //calcolo quanti elementi della trans t sono presenti in intial
-                        for(int j=i+1; j<initialSituation.size(); j++){
-                            if(initialSituation.get(i).getTrans().equals(initialSituation.get(j).getTrans())){
-                                elementOfTrans++;
-                                visit[j]=true;
-                                pairInTheTrans.add(initialSituation.get(j));
-                            }
-                        }
-                        //nel caso in cui si abbiano il numero giusto trans in initial faccio altri controlli faccio altro
-                        if(initialSituation.get(i).getTrans().getIdPre().size()==elementOfTrans){
-                            //modifico i valori dei token se è necessari, se non sono abbastanza la transizione non parte
-                            for(int l=0; l<pairInTheTrans.size(); l++ ){
-                                if(pairInTheTrans.get(l).getWeight()>pairInTheTrans.get(l).getPlace().getNumberOfToken()){
-                                    continue;
-                                }else {
-                                    pairInTheTrans.get(l).getPlace().differenceToken(pairInTheTrans.get(l).getWeight());
-
-                                }
-
-                            }
-                            temp.add(pairInTheTrans.get(i).getTrans());
-                        }else {
-                            continue;
-                        }
-                    }
-                }
-
-        return temp;
-    }
-    public ArrayList<Transition> initialization2( ArrayList<Pair> initialSituation) {
-        ArrayList<Transition> temp=new ArrayList<>();
-        HashMap <Pair, Transition> initial= new HashMap<>();
 
 
-
-        for(int i=0; i<initialSituation.size(); i++){
-            initial.put(initialSituation.get(i), initialSituation.get(i).getTrans());
-        }
-        for(Pair p: initialSituation){
-
-        }
-
-        return temp;
-    }
-
-    public int calculateN(ArrayList<Pair> initialMark, boolean[] visit, int n, int i) {
-
-        for (int j = i + 1; j < initialMark.size(); j++) {
-
-            if (visit[j] == true) {
-                continue;
-            }
-            //controllo se l'elemento ha la stessa transizione
-            if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
-                //se è vero controllo se la coppia faccia parte dei pre della transizione
-                for (String s : initialMark.get(j).getTrans().getIdPre()) {
-                    if (initialMark.get(j).getTrans().isIn(s) && initialMark.get(j).getWeight() <= initialMark.get(j).getPlace().getNumberOfToken()) {
-                        //aggiorno il peso totale
-                        n = n + initialMark.get(j).getWeight();
-                        //indico che ho visitato il nodo
-                        visit[j] = true;
-                    }else{
-                        return 0;
-                    }
-
-                }
-            }
-
-        }
-        return n;
-    }
     /**
      * Override of the equals method which allows me to check if two petri nets are equal
      * @param obj is element to check
@@ -205,10 +116,15 @@ public class PetriNet extends Net implements Simulation {
      * this method check all the differnt case in  a Petri's Net in order to decide which transitions can work
      * @param initialMark, this parameter identify the initial situazion in that moment and it doesn't always indicate che initial mark of the net
      * @param temp the arraylist where we put the transition that can be moved
-     * @param visit this array avoid to check pair that we have already checked
      * @param finalTrans we put the element that will be shows to the user, who has to choose which one has to work
      */
-    public void initialSituationInTheNet( ArrayList<Pair> initialMark, ArrayList<Transition> temp, boolean[] visit, HashMap<Transition, ArrayList<Pair>> finalTrans) {
+    public void initialSituationInTheNet( ArrayList<Pair> initialMark, ArrayList<Transition> temp, HashMap<Transition, ArrayList<Pair>> finalTrans) {
+       assert initialMark!=null;
+       assert temp!=null;
+       assert finalTrans!=null;
+       //this array avoid to check pair that we have already checked
+        boolean[] visit = new boolean[initialMark.size()];
+
         ArrayList<Pair> pairInTheTrans;
         for (int i = 0; i < initialMark.size(); i++) {
             //first of all we check if the pair has already checked
@@ -239,17 +155,18 @@ public class PetriNet extends Net implements Simulation {
             //we check if there are enough token in the transition, in the opposite case there the transition can't work
             //significa che la transazione non potrà mai scattare
             if (initialMark.get(i).getNumberOfToken() > initialMark.get(i).getWeight()) {
-                int elementOfTrans = 1;
+
                 pairInTheTrans = new ArrayList<>();
-                boolean errato = true;
+
                 pairInTheTrans.add(initialMark.get(i));
 
                 //we check if the other element in the initial mark that refers to the same transition are correct
-                if (checkTheElementMultipleCase(initialMark, visit, pairInTheTrans, i, elementOfTrans, errato)) continue;
+                if (checkTheElementMultipleCase(initialMark, visit, pairInTheTrans, i)) continue;
 
 
-
+            //we add to temp the current transition
                 temp.add(initialMark.get(i).getTrans());
+                //we insert in final trans the final elements, so the element that can be used for the simulation
                 finalTrans.put(initialMark.get(i).getTrans(), pairInTheTrans);
             }
 
@@ -258,34 +175,59 @@ public class PetriNet extends Net implements Simulation {
         }
     }
 
-
-    public boolean checkTheElementMultipleCase(ArrayList<Pair> initialMark, boolean[] visit, ArrayList<Pair> pairInTheTrans, int i, int elementOfTrans, boolean errato) {
+    /**
+     * this method dies all the actions necessary for the case where there are more than pair connected to the transition, so we have to check if all the pair are correct
+     * @param initialMark contains all the pair that has token
+     * @param visit this array allows to check only the element that we haven't checked
+     * @param pairInTheTrans this arrayList contains or it will contain the pair connected to the transition that we are checking
+     * @param i give us the indication about which element we are checking
+     * @return
+     */
+    public boolean checkTheElementMultipleCase(ArrayList<Pair> initialMark, boolean[] visit, ArrayList<Pair> pairInTheTrans, int i) {
+        assert initialMark!=null;
+        assert visit!=null;
+        assert pairInTheTrans!=null;
+        assert i>-1;
+        //this variable contains the number of the elements in the initial markink which refer the current transition
+        int elementOfTrans = 1;
+        boolean checkIfTheTransitionCanWork = true;
+        //we loop on all the pair in the initialMark in order to find only the one that hase the same transition of the pair that we are checking
         //calcolo quanti elementi della trans t sono presenti in intial
         for (int j = i + 1; j < initialMark.size(); j++) {
-            //se errato è falso significa che non devo fare controlli ma indico già che è visitato
-            if (errato == false) {
-
+            //if checkIfTheTransitionCanWork is false that means that we don't have to check other pair
+            //se checkIfTheTransitionCanWork è falso significa che non devo fare controlli ma indico già che è visitato
+            if (checkIfTheTransitionCanWork == false) {
+            //we decided to continue the loop because we can set visit true for all the other elements which have the same transition in order to avoid multiple check in the next actions
+            //the element will not be add to the final array so che size will be incorrect
                 visit[j] = true;
                 continue;
             }
 
+            // we want the elements that has the same transition of the pair that we are checking
             if (initialMark.get(i).getTrans().equals(initialMark.get(j).getTrans())) {
+
                 //se non rispetta questa condizione significa che non si hanno abbastanza elementi totali, non continuo a fare controlli ma pongo gli altri elementi in modo
                 //non ci siano ulteriori controlli
-                if (pairInTheTrans.get(j).getNumberOfToken() < pairInTheTrans.get(j).getWeight()) {
-                    errato = false;
+                //if the pair has less token that the transition required the transition can't work, so all the other actions will be usefull
+                if (initialMark.get(j).getNumberOfToken() < initialMark.get(j).getWeight()) {
+                    checkIfTheTransitionCanWork = false;
                     continue;
                 }
-
+                //in the case that the condition is  not verify we can continue to do action
                 elementOfTrans++;
                 // sumOfEveryTrans=sumOfEveryTrans+initialMark.get(j).getNumberOfToken();
+
                 visit[j] = true;
-                pairInTheTrans.add(initialMark.get(j));
+                    //so we had to add the pair to the arraylist
+                    pairInTheTrans.add(initialMark.get(j));
             }
 
         }
+
+        //if the element of trans has less element than the element in the pre of the transition, we can't add the transition to the final check
+        //also if the check in the transition can work is false the addition can be made. The second check is redundant
         //ho meno elementi di quelli che dovrei avere passo oltre o se un elemento non era corretto
-        if (elementOfTrans < initialMark.get(i).getTrans().sizePre() || errato == false) {
+        if (elementOfTrans < initialMark.get(i).getTrans().sizePre() || checkIfTheTransitionCanWork == false) {
             return true;
         }
         return false;

@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.*;
 
 public class IO {
-    public static final String WHAT_DO_YOU_WANT_DO_0_EXIT_1_START_SIMULATION = "What do you want do?\n0)EXIT\n1)Start simulation";
+    public static final String WHAT_DO_YOU_WANT_DO_0_EXIT_1_START_SIMULATION = "What do you want do?\n0)EXIT\n1)Load the net \n2) Simulation ";
     public static final String THERE_AREN_T_ANY_NETS_LOADED_YOU_HAVE_TO_LOAD_ONE_NET_BEFORE_THE_SIMULATION = "There aren't any nets loaded, you have to load one net before the simulation";
 
     public static final String CHOOSE_THE_ELEMENT = "choose the mode:\n0) Exit \n1) User mode \n2) Configurator mode";
