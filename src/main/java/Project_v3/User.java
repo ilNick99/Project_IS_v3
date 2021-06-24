@@ -45,10 +45,8 @@ public class User {
                     }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
 
                     IO.printNets(loadNetPetri);
-                check = IO.yesOrNo("Do you want close the program?\n");
+                check = IO.yesOrNo(IO.DO_YOU_WANT_CLOSE_THE_PROGRAM);
 
-                //simulazione(selected, selected.getInitialMark());
-               // } while (IO.yesOrNo(IO.DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION));
                 break;
                 //after the load the user can simulate the net
             case 2:
@@ -65,7 +63,7 @@ public class User {
                     //we start the simulation
                     simulation(selected, loadNetPetri.get(select - 1).getInitialMark());
                 }
-                check = IO.yesOrNo("Do you want close the program?\n");
+                check = IO.yesOrNo(IO.DO_YOU_WANT_CLOSE_THE_PROGRAM);
 
                 break;
 
@@ -79,70 +77,90 @@ public class User {
      * @param initialMark this is the initial mark or in the case of recursive option is the initial situazion in that time
      */
     public void simulation(PetriNet pN, ArrayList<Pair> initialMark) {
+       assert  pN!=null;
+       assert initialMark!=null;
+
         //in the we put the transition that can be chosen
         ArrayList<Transition> transitionThatCanWork = new ArrayList<Transition>();
         //visit avoid to check elements that we have already checked
 
         ArrayList<Pair> pairInTheTrans = new ArrayList<>();
        HashMap<Transition, ArrayList<Pair>> finalTrans= new HashMap<>();
-       //initial situazion give us the possibile element
+       //initial situation give us the possibile element
        pN.initialSituationInTheNet(initialMark, transitionThatCanWork, finalTrans);
 
 
-
+              //we have made all the checks, so in transitionThatCanWork there are the transitions that  we can use for the simulation
             //ho fatto i controlli possibili in pairInTheTrans ho le transazioni che possono scattare
                 if (transitionThatCanWork.size() == 0) {
+                    //In this case there aren't any transitions avaible
                     IO.print(IO.THERE_AREN_T_ANY_TRANSITION_AVAILABLE);
 
                 } else {
+                    //we ask to the user which transition he wants to use
                     int risp = whichPostisChosen(transitionThatCanWork);
+                    //if the answer is negative that means that the user want to stop the simulation
                     if(risp<0){
                         //dovrei printare la rete
+                        IO.showPetriNet(pN);
                         return;
                     }
-                    var var= finalTrans.get( transitionThatCanWork.get(risp));
-                    //sposto i token tolti in quelli nei post
+                    //we have to change the token in the post transition
                     int weightTotal = getWeightTotal( finalTrans.get(transitionThatCanWork.get(risp)));
-
-
-
-
-
                     setPreandPost(pN, transitionThatCanWork, risp, weightTotal);
-                    modifyThePrePair(transitionThatCanWork, finalTrans, risp);
+                    modifyThePrePair(finalTrans.get(transitionThatCanWork.get(risp)));
+                    //we have to remove the token in the pre pairs
                     ArrayList<Pair> newInit=new ArrayList<>();
-                    //devo calcolare la nuova situazione iniziale
+                    //we have to calculate the new situation
                     calculateNewInitialSituation(pN, newInit);
 
+                    //we start a new simulation
                     simulation(pN, newInit);
                 }
 
 
         }
 
+    /**
+     * this method ask to the user which transition he want to use
+     * @param temp all the transitions avaible
+     * @return the transition that the user has chosen
+     */
     private int whichPostisChosen(ArrayList<Transition> temp) {
-        //altrimenti mostro le transizioni abilitate e chiedo quale si voglia far scattare
+        assert temp!=null;
         IO.print(IO.THE_FOLLOWING_TRANSITION_ARE_AVAILABLE);
-        for (int i = 0; i < temp.size(); i++) {
-            System.out.println((i + 1) + ") " + temp.get(i).getName());
-        }
-        IO.print("If you want to stop the simulatoin press 0");
-        //mi dice quale transazione devo far scattare
+        //we print the transition
+        IO.printTransition(temp);
+        IO.print(IO.STOP);
+//the user inserts the number of the transition that he wants to use
         return IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE, 0, temp.size()) - 1;
     }
 
-    private void modifyThePrePair(ArrayList<Transition> temp, HashMap<Transition, ArrayList<Pair>> finalTrans, int risp) {
-        //devo modificare gli elementi dei preSottraendo ai token il weight
-        for(Pair p: finalTrans.get(temp.get(risp))){
+    /**
+     * this method removes the token in the pre paris
+     * @param PreElement the elements that should be modified
+     */
+    private void modifyThePrePair(ArrayList<Pair> PreElement) {
+        assert PreElement!=null;
+    //we have to make the difference between the token and the weight
+    for(Pair p: PreElement){
             p.getPlace().differenceToken(p.getWeight());
         }
     }
 
+    /**
+     * this method allows us to calculate the new situation
+     * @param pN the petri net that we use
+     * @param newInit the array where we put the element
+     */
     private void calculateNewInitialSituation(PetriNet pN, ArrayList<Pair> newInit) {
+        assert pN!=null;
+        assert newInit!=null;
         ArrayList<Place> temporaryPlace= new ArrayList<>();
         for (Pair p: pN.getPairs()){
+            //ew check if the place has some tokens and we don't want to add place more than once
             if(p.getPlace().getNumberOfToken()!=0 && !temporaryPlace.contains(p.getPlace())){
-                System.out.println("Place "+ p.getPlace().getName() + " has " + p.getNumberOfToken() + " token");
+                IO.print("Place "+ p.getPlace().getName() + " has " + p.getNumberOfToken() + " token");
                newInit.add(p);
                temporaryPlace.add(p.getPlace());
             }

@@ -2,7 +2,7 @@ package main.java.Project_v3;
 
 import java.util.*;
 
-public class PetriNet extends Net {
+public class PetriNet extends Net implements  Simulation{
 
 
 
