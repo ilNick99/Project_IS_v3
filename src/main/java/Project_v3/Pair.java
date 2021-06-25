@@ -41,9 +41,12 @@ public class Pair {
     }
     public void setWeight(int weight) {
 
-        this.weight = this.weight;
+        this.weight = weight;
     }
+    public void updateWeight() {
 
+        this.weight=this.weight+1;
+    }
     public Place getPlace() {
         return place;
     }
@@ -87,4 +90,6 @@ public class Pair {
     public int getWeight() {
         return weight;
     }
+
+
 }

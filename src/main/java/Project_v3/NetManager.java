@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NetManager {
-    private final ArrayList<Net> netList = new ArrayList<>();
-    private final ArrayList<PetriNet> petriNetList = new ArrayList<>();
+    private ArrayList<Net> netList = new ArrayList<>();
+    private ArrayList<PetriNet> petriNetList = new ArrayList<>();
 
     /**
      * this method handles the interface with the user

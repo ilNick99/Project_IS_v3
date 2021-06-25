@@ -39,8 +39,9 @@ public class User {
                     IO.print(IO.YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT);
 
                     do {
-
-                        loadNetPetri.add(JsonManager.loadPetriNet());
+                        PetriNet NetAlreadyLoaded=JsonManager.loadPetriNet();
+                        IO.showPetriNet(NetAlreadyLoaded);
+                        loadNetPetri.add(NetAlreadyLoaded);
 
                     }while(IO.yesOrNo(IO.DO_YOU_WANT_TO_LOAD_OTHER_NETS));
 
@@ -98,22 +99,22 @@ public class User {
 
                 } else {
                     //we ask to the user which transition he wants to use
+
                     int risp = whichPostisChosen(transitionThatCanWork);
                     //if the answer is negative that means that the user want to stop the simulation
                     if(risp<0){
-                        //dovrei printare la rete
                         IO.showPetriNet(pN);
                         return;
                     }
                     //we have to change the token in the post transition
                     int weightTotal = getWeightTotal( finalTrans.get(transitionThatCanWork.get(risp)));
-                    setPreandPost(pN, transitionThatCanWork, risp, weightTotal);
+                    setPreandPost(pN, transitionThatCanWork.get(risp));
                     modifyThePrePair(finalTrans.get(transitionThatCanWork.get(risp)));
                     //we have to remove the token in the pre pairs
                     ArrayList<Pair> newInit=new ArrayList<>();
                     //we have to calculate the new situation
                     calculateNewInitialSituation(pN, newInit);
-
+                    IO.showPetriNet(pN);
                     //we start a new simulation
                     simulation(pN, newInit);
                 }
@@ -159,7 +160,7 @@ public class User {
         ArrayList<Place> temporaryPlace= new ArrayList<>();
         for (Pair p: pN.getPairs()){
             //ew check if the place has some tokens and we don't want to add place more than once
-            if(p.getPlace().getNumberOfToken()!=0 && !temporaryPlace.contains(p.getPlace())){
+            if(p.getPlace().getNumberOfToken()!=0 ){
                 IO.print("Place "+ p.getPlace().getName() + " has " + p.getNumberOfToken() + " token");
                newInit.add(p);
                temporaryPlace.add(p.getPlace());
@@ -182,22 +183,29 @@ public class User {
         return weightTotal;
     }
 
-    private void setPreandPost(PetriNet pN, ArrayList<Transition> temp, int risp, int weightTotal) {
+    private void setPreandPost(PetriNet pN, Transition transitionThatWeHaveToModify) {
         //aggiorno tutti i post della transizione modificando il valore dei loro pesi
-        if(temp.get(risp).sizePost()==1){
+        if(transitionThatWeHaveToModify.sizePost()==1){
             //al post ci metto la somma degli elementi dei pesi dei pre, è nelle coppie
-            pN.getPair(pN.getPlace(temp.get(risp).getIdPost().get(0)), temp.get(risp)).setWeight(weightTotal);
-        }else{
-            IO.print(IO.THIS_TRANSITION_CAN_MOVE_THE_TOKENS_IN_DIFFERENT_PLACES);
-            IO.printString(temp.get(risp).getIdPost());
-         /*   System.out.println("This transition can move the tokens in different places");
-            for(int i = 0; i< temp.get(risp -1).sizePost(); i++){
-                System.out.println(i+1+") " + temp.get(risp).getIdPost().get(i));
+
+            pN.getPair(pN.getPlace(transitionThatWeHaveToModify.getIdPost().get(0)), transitionThatWeHaveToModify).getPlace().updateToken();
+        }else {
+
+
+            IO.print(IO.THIS_TRANSITIONS_WILL_BE_UPDATED);
+            IO.printString(transitionThatWeHaveToModify.getIdPost());
+
+
+            /*   System.out.println("This transition can move the tokens in different places");
+            for(int i = 0; i< transitionThatWeHaveToModify.get(risp -1).sizePost(); i++){
+                System.out.println(i+1+") " + transitionThatWeHaveToModify.get(risp).getIdPost().get(i));
 
             }*/
             //elemento è il post che devo modificare
-            int elem=IO.readInteger(IO.WHERE_DO_YOU_WANT_TO_PUT_THE_TOKEN, 1, temp.get(risp).sizePost() )-1;
-            pN.getPair(pN.getPlace(temp.get(risp).getIdPost().get(elem)), temp.get(risp)).setWeight(weightTotal);
+            //int elem=IO.readInteger(IO.WHERE_DO_YOU_WANT_TO_PUT_THE_TOKEN, 1, transitionThatWeHaveToModify.get(risp).sizePost() )-1;
+            for (int i = 0; i < transitionThatWeHaveToModify.getIdPost().size(); i++) {
+                pN.getPair(pN.getPlace(transitionThatWeHaveToModify.getIdPost().get(i)), transitionThatWeHaveToModify).getPlace().updateToken();
+            }
         }
     }
 

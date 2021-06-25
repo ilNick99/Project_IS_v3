@@ -25,7 +25,7 @@ public class IO {
     public static final String DO_YOU_WANT_TO_ADD_TOKEN_TO_PLACE = "Do you want to add token to place ? ";
     public static final String THERE_AREN_T_ANY_FILES_TO_LOAD = "There aren't any files to load";
     public static final String WHERE_DO_YOU_WANT_TO_PUT_THE_TOKEN = "Where do you want to put the token?";
-    public static final String THIS_TRANSITION_CAN_MOVE_THE_TOKENS_IN_DIFFERENT_PLACES = "This transition can move the tokens in different places";
+    public static final String THIS_TRANSITIONS_WILL_BE_UPDATED = "This transition will move the token to this place";
     public static final String DO_YOU_WANT_TO_MAKE_AN_OTHER_SIMULATION = "Do you want to make an other simulation?";
     public static final String YOU_HAVE_TO_LOAD_A_NET_WHICH_ONE_DO_YOU_WANT = "\nYou have to load a net, which one do you want?";
     public static final String INSERT_THE_NUMBER_OF_THE_NET_THAT_YOU_WANT_TO_USE = "Insert the number of the net that you want to use";
