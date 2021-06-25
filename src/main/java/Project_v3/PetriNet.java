@@ -6,9 +6,9 @@ public class PetriNet extends Net implements  Simulation{
 
 
 
-    private static final HashMap<Pair, Integer> initialMarking = new HashMap<>();
-    private static ArrayList<Pair> initialMark=new ArrayList<>();
-    public static HashMap<Pair, Integer> getInitialMarking() {
+    private HashMap<Pair, Integer> initialMarking = new HashMap<>();
+    private ArrayList<Pair> initialMark=new ArrayList<>();
+    public HashMap<Pair, Integer> getInitialMarking() {
         return initialMarking;
     }
 

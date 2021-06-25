@@ -1,0 +1,133 @@
+@startuml
+
+Main -- Manager
+Manager -Left- User
+Manager -- NetManager
+Manager -Right- Configurator
+NetManager -Right- Net
+Net <|-Right- PetriNet
+PetriNet ..> Simulation
+Net o-Down- Pair
+Pair o-- Transition
+Pair o-- Place
+package Utility <<frame>>{
+NetManager <-- JsonReader
+NetManager <-- JsonWriter
+}
+class Main {
++ {static} main(args: String[])
+}
+
+class Net {
+- net: ArrayList<Pair>
+- ID: String
+- name: String
+- i: int
+- setOfPlace: HashSet<Place>
+- setOfTrans: HashSet<Transition>
++ getNet(): ArrayList<Pair>
++ getID(): String
++ getName(): String
++ addPair()
++ addPairFromJson()
++ checkPair(): boolean
++ checkPendantNode(): boolean
++ getSetOfPlace() : HashSet<Place>
++ getSetofTrans(): HashSet<Transition>
++ Net(String s)
++ checkConnect() : boolean
++ recursion(Hasmap<String, ArrayList<String>> m, Hasmap<String, Boolean> b, String k) :void
++ checkTrans(): boolean
+}
+
+class NetManager {
+- netList: ArrayList<Net>
++ manageOption()
++ addNet()
++ checkNet(Net n)
++ loadNet()
++ showNet(Net n)
+- existAlread(Hasmap<int, int> h, int i, int j)
+
+}
+
+class Pair {
+- place: Place
+- trans: Transition
++ getPlace(): Place
++ getTrans(): Transition
++ compare(): boolean
+}
+
+class Place {
+- id: String
++ Place()
++ getID(): String
+}
+
+class Transition {
+- id: String
+-pre: ArrayList<String>
+-post: ArrayList<String>
++ getID(): String
++ Transition
++ getIDPre: ArrayList<String>
++ getIDPost: ArrayList<String>
++ addPre:void
++ addPost: void
++ getSizePre: int
++ getSizePost: int
++ getInputOutput
+}
+
+class JsonReader {
++ {static} readJson()
+}
+
+class JsonWriter {
++ {static} writeJson()
++ {static} stringNer(Net n): String
++ {static} makeFile() : String
+}
+
+class PetriNet {
+- initalMark: ArrayList<Pair>
+- initalMarking: HashMap<Pair,Integer>
++ PetriNet(Net)
++ addToken(String, int): boolean
++ addWeight(String, String, int): void
++ checkTheElementMultipleCase(ArrayList<Pair>, boolean[], ArrayList<Pair>, int): boolean
++ equals(Object): boolean
++ getInitialMark(): ArrayList<Pair>
++ getInitialMarking(): HashMap<Pair,Integer>
++ initialSituationInTheNet(ArrayList<Pair>,ArrayList<Transition>,HashMap<Transition,ArrayList<Pair>>): void
++ saveInitialMark(): void
+}
+
+interface Simulation {
++ checkTheElementMultipleCase(ArrayList<Pair>, boolean[], ArrayList<Pair>, int): boolean
++ initialSituationInTheNet(ArrayList<Pair>,ArrayList<Transition>,HashMap<Transition,ArrayList<Pair>>): void
+}
+
+class Manager {
+- config: Configurator
+- manager: NetManager
+- user: User
++ start(): void
+}
+
+class User {
++ calculateNewInitialSituation(PetriNet,ArrayList<Pair>): void
++ getWeigthTotal(ArrayList<Pair>): void
++ modifyThePrePair(ArrayList<Pair>): void
++ operation(NetManager): void
++ setPreandPost(PetriNet, ArrayList<Transition>, int, int): void
++ simulation(PetriNet, ArrayList<Pair>): void
++ whichPostisChosen(ArrayList<Transition>): int
+}
+
+class Configurator {
++ operation(NetManager): void
+}
+
+@enduml
