@@ -69,7 +69,7 @@ public class IO {
     public static final String THE_WEIGHT_HAS_BEEN_ADDED = "The weight has been added";
     public static final String THE_PLACE_DOESN_T_EXIST = "The place doesn't exist";
 
-
+    //declare the objet to get user input
     private static Scanner reader = scannerBuild();
 
     /**
@@ -123,8 +123,8 @@ public class IO {
 
     /**
      * This method allows me (concisely) to create the string I use to ask the user if the place he wants to add is a successor or predecessor of a transition
-     * @param transName
-     * @param placeName
+     * @param transName the name of transition
+     * @param placeName the name of the place
      * @return the final string
      */
     public static String connectionBetweenPlaceandTrans(String transName, String placeName){
@@ -175,6 +175,11 @@ public class IO {
     }
 
 
+    /**
+     * method to read the input number
+     * @param message the message to show to user
+     * @return the value that user have inserted
+     */
     public static int readNumber(String message) {
         boolean finish = false;
         int readValue = 0;
@@ -284,7 +289,7 @@ public class IO {
     /**
      * method to view the Petri's net
      *
-     * @param net
+     * @param net the petri net to show
      */
     public static void showPetriNet(Net net) {
         //get name and if of the net
@@ -368,7 +373,7 @@ public class IO {
     /**
      * method to view the net
      *
-     * @param net
+     * @param net the net to show
      */
     public static void showNet(Net net) {
         //get name and if of the net
@@ -446,6 +451,11 @@ public class IO {
         print(MARKING_WITH_TOKEN);
         printPair(initialMark);
     }
+
+    /**
+     * method to print the pairs of the net
+     * @param pairs the list of the pair of the net
+     */
     public static void printPair(Iterable<Pair> pairs) {
         for (Pair p: pairs){
             IO.print(p.getPlace().getName() + WHERE_THERE_ARE + p.getPlace().getNumberOfToken());
@@ -454,6 +464,10 @@ public class IO {
 
     }
 
+    /**
+     * method to print the list of the net already loaded
+     * @param nets the list of all net loaded
+     */
     public static void printNets(Iterable<PetriNet> nets) {
         int i=1;
         for (Net n: nets){

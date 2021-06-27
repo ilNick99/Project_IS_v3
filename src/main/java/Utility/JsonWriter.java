@@ -43,8 +43,8 @@ public class JsonWriter {
 
     /**
      * method to get the Json string of the net
-     * @param net
-     * @return stringJson
+     * @param net the net to get data
+     * @return stringJson the string to print on the file
      */
     private static String stringNet(Net net) {
         assert net != net;
@@ -96,7 +96,7 @@ public class JsonWriter {
 
     /**
      * method to create a new json file where save the net and get its pathname
-     * @return pathname
+     * @return pathname the pathname of the file to write on
      */
     private static String makeFile() {
         //initialize file object of directory
@@ -128,8 +128,8 @@ public class JsonWriter {
 
     /**
      * method to get the Json string of the Petri's net
-     * @param net
-     * @return stringJson
+     * @param net the net from that take data
+     * @return stringJson the string to print in the file
      */
     public static String stringPetriNet(PetriNet net) {
         //initalize the Arraylist of pairs of the net
@@ -189,7 +189,6 @@ public class JsonWriter {
 
     /**
      * method to create a new json file where save the Petri's net and get its pathname
-     * @return pathname
      */
     private static String makePetriFile() {
         //initialize file object of directory
@@ -223,7 +222,7 @@ public class JsonWriter {
 
     /**
      * method to write a Petri's net on json
-     * @param net
+     * @param net the net to write in the file
      */
     public static void writeJsonPetri(PetriNet net) {
         //get the json string of the net to print in the file

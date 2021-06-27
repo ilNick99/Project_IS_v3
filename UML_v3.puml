@@ -13,6 +13,8 @@ Pair o-- Place
 package Utility <<frame>>{
 NetManager <-- JsonReader
 NetManager <-- JsonWriter
+NetManager <- JsonManager
+NetManager <-Left- IO
 }
 class Main {
 + {static} main(args: String[])
@@ -124,6 +126,18 @@ class User {
 + setPreandPost(PetriNet, ArrayList<Transition>, int, int): void
 + simulation(PetriNet, ArrayList<Pair>): void
 + whichPostisChosen(ArrayList<Transition>): int
+}
+
+class IO {
+}
+
+class JsonManager {
++ checkNumFile(String[]): int
++ existAlready(HashMap<Integer, Integer>, int, int): boolean
++ getPath(String): String
++ getPathname(String): String[]
++ loadNet(): Net
++ loadPetriNet(): PetriNet
 }
 
 class Configurator {
