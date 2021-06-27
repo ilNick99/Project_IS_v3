@@ -14,9 +14,8 @@ import java.util.Scanner;
 public class JsonReader {
     /**
      * read file method
-     *
-     * @param pathname
-     * @return Net
+     * @param pathname the pathname of the file to read
+     * @return Net the net read from the input file
      * @throws FileNotFoundException
      */
     public static Net readJson(String pathname) throws FileNotFoundException {
@@ -74,11 +73,11 @@ public class JsonReader {
         //the net is built and return
         return net;
     }
+
     /**
      * this method allows to read a Petri's net contain in a file
-     *
-     * @param pathname
-     * @return Net
+     * @param pathname the pathname of the file to read
+     * @return Net the net loaded from the input file
      * @throws FileNotFoundException
      */
     public static PetriNet readPetriJson(String pathname) throws FileNotFoundException {
