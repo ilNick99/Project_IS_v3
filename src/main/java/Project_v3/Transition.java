@@ -152,6 +152,11 @@ public class Transition {
         return idPost.get(i);
     }
 
+    /**
+     * this method check if the string, so the name of the transition is in the pre of the transition
+     * @param s
+     * @return
+     */
     public boolean isIn(String s) {
         for(String n: idPre){
             if(s.equals(n)){

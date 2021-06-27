@@ -61,7 +61,8 @@ public class Place {
 public  void updateToken(){
         this.numberOfToken++;
 
-}    public void differenceToken(int weight) {
+}
+public void differenceToken(int weight) {
         setToken(numberOfToken-weight);
     }
 }

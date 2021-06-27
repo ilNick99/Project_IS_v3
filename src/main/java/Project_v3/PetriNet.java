@@ -1,5 +1,7 @@
 package main.java.Project_v3;
 
+import main.java.Utility.IO;
+
 import java.util.*;
 
 public class PetriNet extends Net implements  Simulation{
@@ -233,5 +235,53 @@ public class PetriNet extends Net implements  Simulation{
         return false;
     }
 
+    /**
+     * this method is necessary to have the initial situation in the correct structures
+     * @return the element that contains all the transitions that can work and their pair
+     */
+    public HashMap<Transition, ArrayList<Pair>> simulation(ArrayList<Pair> initialMark){
+
+        //in the we put the transition that can be chosen
+        ArrayList<Transition> transitionThatCanWork = new ArrayList<Transition>();
+        HashMap<Transition, ArrayList<Pair>> finalTrans= new HashMap<>();
+        //
+        initialSituationInTheNet(initialMark, transitionThatCanWork, finalTrans);
+        return finalTrans;
+    }
+
+    /**
+     * this method allows to modifu the token in the post place
+     * @param transitionThatWeHaveToModify this structure contains the elements that we have to modify
+     */
+    public void setPreandPost( Transition transitionThatWeHaveToModify) {
+        //aggiorno tutti i post della transizione modificando il valore dei loro pesi
+        if (transitionThatWeHaveToModify.sizePost() == 1) {
+            //we modify the only element presents
+            getPair(getPlace(transitionThatWeHaveToModify.getIdPost().get(0)), transitionThatWeHaveToModify).getPlace().updateToken();
+        } else {
+            //we have to modify the token in the place due to the transition
+            for (int i = 0; i < transitionThatWeHaveToModify.getIdPost().size(); i++) {
+                getPair(getPlace(transitionThatWeHaveToModify.getIdPost().get(i)), transitionThatWeHaveToModify).getPlace().updateToken();
+            }
+        }
+    }
+
+    /**
+     * this method allows us to calculate the new situation
+
+     * @param newInit the array where we put the element
+     */
+    public void calculateNewInitialSituation(ArrayList<Pair> newInit) {
+
+        assert newInit!=null;
+        ArrayList<Place> temporaryPlace= new ArrayList<>();
+        for (Pair p: getPairs()){
+            //ew check if the place has some tokens and we don't want to add place more than once
+            if(p.getPlace().getNumberOfToken()!=0 ){
+                newInit.add(p);
+                temporaryPlace.add(p.getPlace());
+            }
+        }
+    }
 }
 

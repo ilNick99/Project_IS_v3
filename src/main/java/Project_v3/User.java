@@ -3,6 +3,7 @@ package main.java.Project_v3;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import main.java.Utility.IO;
 import main.java.Utility.JsonManager;
@@ -62,7 +63,11 @@ public class User {
                     IO.showPetriNet(selected);
                     selected.saveInitialMark();
                     //we start the simulation
-                    simulation(selected, loadNetPetri.get(select - 1).getInitialMark());
+                    do{
+
+                        startSimulation(selected, selected.getInitialMark());
+
+                    }while (IO.yesOrNo(IO.DO_YOU_WANT_TO_CONTINUE_THE_SIMULATION));
                 }
                 check = IO.yesOrNo(IO.DO_YOU_WANT_CLOSE_THE_PROGRAM);
 
@@ -71,70 +76,45 @@ public class User {
         }
          } while (!check );
     }
+    public void startSimulation(PetriNet pN, ArrayList<Pair> initialMark) {
 
-    /**
-     * this method allows to simulate the actions of the Petri's net
-     * @param pN this is the net that the user had choose
-     * @param initialMark this is the initial mark or in the case of recursive option is the initial situazion in that time
-     */
-    public void simulation(PetriNet pN, ArrayList<Pair> initialMark) {
-       assert  pN!=null;
-       assert initialMark!=null;
+        HashMap<Transition, ArrayList<Pair>> finalTrans = pN.simulation(initialMark);
+//we have made all the checks, so in transitionThatCanWork there are the transitions that  we can use for the simulation
+        //ho fatto i controlli possibili in pairInTheTrans ho le transazioni che possono scattare
+        if (finalTrans.size() == 0) {
+            //In this case there aren't any transitions avaible
+            IO.print(IO.THERE_AREN_T_ANY_TRANSITION_AVAILABLE);
 
-        //in the we put the transition that can be chosen
-        ArrayList<Transition> transitionThatCanWork = new ArrayList<Transition>();
-        //visit avoid to check elements that we have already checked
-
-        ArrayList<Pair> pairInTheTrans = new ArrayList<>();
-       HashMap<Transition, ArrayList<Pair>> finalTrans= new HashMap<>();
-       //initial situation give us the possibile element
-       pN.initialSituationInTheNet(initialMark, transitionThatCanWork, finalTrans);
+        } else {
 
 
-              //we have made all the checks, so in transitionThatCanWork there are the transitions that  we can use for the simulation
-            //ho fatto i controlli possibili in pairInTheTrans ho le transazioni che possono scattare
-                if (transitionThatCanWork.size() == 0) {
-                    //In this case there aren't any transitions avaible
-                    IO.print(IO.THERE_AREN_T_ANY_TRANSITION_AVAILABLE);
-
-                } else {
-                    //we ask to the user which transition he wants to use
-
-                    int risp = whichPostisChosen(transitionThatCanWork);
-                    //if the answer is negative that means that the user want to stop the simulation
-                    if(risp<0){
-                        IO.showPetriNet(pN);
-                        return;
-                    }
-                    //we have to change the token in the post transition
-                    int weightTotal = getWeightTotal( finalTrans.get(transitionThatCanWork.get(risp)));
-                    setPreandPost(pN, transitionThatCanWork.get(risp));
-                    modifyThePrePair(finalTrans.get(transitionThatCanWork.get(risp)));
-                    //we have to remove the token in the pre pairs
-                    ArrayList<Pair> newInit=new ArrayList<>();
-                    //we have to calculate the new situation
-                    calculateNewInitialSituation(pN, newInit);
-                    IO.showPetriNet(pN);
-                    //we start a new simulation
-                    simulation(pN, newInit);
-                }
-
-
+            //we ask to the user which transition he wants to use
+            Transition transitionChosen = whichPostisChosen(finalTrans.keySet());
+            pN.setPreandPost(transitionChosen);
+            modifyThePrePair(finalTrans.get(transitionChosen));
+            //we have to remove the token in the pre pairs
+            ArrayList<Pair> newInit=new ArrayList<>();
+            //we have to calculate the new situation
+            pN.calculateNewInitialSituation(newInit);
+            IO.showPetriNet(pN);
         }
-
+    }
     /**
      * this method ask to the user which transition he want to use
      * @param temp all the transitions avaible
      * @return the transition that the user has chosen
      */
-    private int whichPostisChosen(ArrayList<Transition> temp) {
+    private Transition whichPostisChosen(Set<Transition> temp) {
+        ArrayList<Transition> elementAvaible=new ArrayList(temp);
         assert temp!=null;
         IO.print(IO.THE_FOLLOWING_TRANSITION_ARE_AVAILABLE);
         //we print the transition
         IO.printTransition(temp);
-        IO.print(IO.STOP);
+
 //the user inserts the number of the transition that he wants to use
-        return IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE, 0, temp.size()) - 1;
+        int choise=IO.readInteger(IO.INSERT_THE_NUMBER_OF_THE_TRANSITION_YOU_WANT_TO_USE, 1, temp.size()) - 1;
+
+        return elementAvaible.get(choise);
     }
 
     /**
@@ -148,66 +128,5 @@ public class User {
             p.getPlace().differenceToken(p.getWeight());
         }
     }
-
-    /**
-     * this method allows us to calculate the new situation
-     * @param pN the petri net that we use
-     * @param newInit the array where we put the element
-     */
-    private void calculateNewInitialSituation(PetriNet pN, ArrayList<Pair> newInit) {
-        assert pN!=null;
-        assert newInit!=null;
-        ArrayList<Place> temporaryPlace= new ArrayList<>();
-        for (Pair p: pN.getPairs()){
-            //ew check if the place has some tokens and we don't want to add place more than once
-            if(p.getPlace().getNumberOfToken()!=0 ){
-                IO.print("Place "+ p.getPlace().getName() + " has " + p.getNumberOfToken() + " token");
-               newInit.add(p);
-               temporaryPlace.add(p.getPlace());
-            }
-        }
-    }
-
-
-
-
-    private int getWeightTotal( ArrayList<Pair> temp) {
-
-
-
-        int weightTotal=0;
-
-        for(Pair p: temp){
-            weightTotal = weightTotal + p.getWeight();
-        }
-        return weightTotal;
-    }
-
-    private void setPreandPost(PetriNet pN, Transition transitionThatWeHaveToModify) {
-        //aggiorno tutti i post della transizione modificando il valore dei loro pesi
-        if(transitionThatWeHaveToModify.sizePost()==1){
-            //al post ci metto la somma degli elementi dei pesi dei pre, è nelle coppie
-
-            pN.getPair(pN.getPlace(transitionThatWeHaveToModify.getIdPost().get(0)), transitionThatWeHaveToModify).getPlace().updateToken();
-        }else {
-
-
-            IO.print(IO.THIS_TRANSITIONS_WILL_BE_UPDATED);
-            IO.printString(transitionThatWeHaveToModify.getIdPost());
-
-
-            /*   System.out.println("This transition can move the tokens in different places");
-            for(int i = 0; i< transitionThatWeHaveToModify.get(risp -1).sizePost(); i++){
-                System.out.println(i+1+") " + transitionThatWeHaveToModify.get(risp).getIdPost().get(i));
-
-            }*/
-            //elemento è il post che devo modificare
-            //int elem=IO.readInteger(IO.WHERE_DO_YOU_WANT_TO_PUT_THE_TOKEN, 1, transitionThatWeHaveToModify.get(risp).sizePost() )-1;
-            for (int i = 0; i < transitionThatWeHaveToModify.getIdPost().size(); i++) {
-                pN.getPair(pN.getPlace(transitionThatWeHaveToModify.getIdPost().get(i)), transitionThatWeHaveToModify).getPlace().updateToken();
-            }
-        }
-    }
-
 
 }

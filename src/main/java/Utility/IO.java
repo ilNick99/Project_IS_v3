@@ -39,6 +39,7 @@ public class IO {
     public static final String VISUALIZE_THE_LIST = "Visualize the list";
     public static final String ADD_WEIGHT = "Do you want to add weight to the transition? If you say no we insert the default value";
     public static final String TRANSITION_CHOOSE = "These are the transition in the Net, do you have to choose which one modify: (insert the number)" ;
+    public static final String DO_YOU_WANT_TO_CONTINUE_THE_SIMULATION ="Do you want to continue the simulation?"; ;
     private static final String path = new File("src/main/java/JsonFile").getAbsolutePath();
     private static final String petriPath = new File("src/main/java/JsonPetri").getAbsolutePath();
     public static final String ANOTHER_NET = "You want add another Net?";
