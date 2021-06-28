@@ -1,5 +1,6 @@
 package main.java.Project_v3;
 
+
 import main.java.Utility.IO;
 
 import java.util.*;
@@ -13,6 +14,7 @@ public class PetriNet extends Net implements  Simulation{
     public HashMap<Pair, Integer> getInitialMarking() {
         return initialMarking;
     }
+    private final ArrayList<Pair> initialMarkCurretly = new ArrayList<>();
 
     public PetriNet(Net genericNet) {
         super(genericNet);
@@ -282,6 +284,21 @@ public class PetriNet extends Net implements  Simulation{
                 temporaryPlace.add(p.getPlace());
             }
         }
+    }
+
+    public void saveInitialMarkCurretly() {
+
+        initialMarkCurretly.clear();
+
+        for (Pair p : super.getPairs()) {
+            if (p.getPlace().getNumberOfToken() != 0) {
+                initialMarkCurretly.add(p);
+            }
+        }
+    }
+
+    public ArrayList<Pair> getInitialMarkCurrenly() {
+        return initialMarkCurretly;
     }
 }
 

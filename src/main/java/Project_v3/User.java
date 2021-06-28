@@ -61,13 +61,13 @@ public class User {
                     selected = loadNetPetri.get(select - 1);
                    //we shows the net
                     IO.showPetriNet(selected);
-                    selected.saveInitialMark();
                     //we start the simulation
+                    boolean canContinue;
                     do{
+                        selected.saveInitialMarkCurretly();
+                        canContinue=   startSimulation(selected, selected.getInitialMarkCurrenly());
 
-                        startSimulation(selected, selected.getInitialMark());
-
-                    }while (IO.yesOrNo(IO.DO_YOU_WANT_TO_CONTINUE_THE_SIMULATION));
+                    }while (canContinue==true && IO.yesOrNo(IO.DO_YOU_WANT_TO_CONTINUE_THE_SIMULATION));
                 }
                 check = IO.yesOrNo(IO.DO_YOU_WANT_CLOSE_THE_PROGRAM);
 
@@ -76,7 +76,14 @@ public class User {
         }
          } while (!check );
     }
-    public void startSimulation(PetriNet pN, ArrayList<Pair> initialMark) {
+
+    /**this method call the method that give the initial situation and then it
+     * asks to the user to choose a transition avabile
+     * @param pN the Petri Net which we are made the simulation
+     * @param initialMark the initial situazion in that moment
+     * @return true if there are some transitions avaibile, false if there aren't any
+     */
+    public boolean startSimulation(PetriNet pN, ArrayList<Pair> initialMark) {
 
         HashMap<Transition, ArrayList<Pair>> finalTrans = pN.simulation(initialMark);
 //we have made all the checks, so in transitionThatCanWork there are the transitions that  we can use for the simulation
@@ -84,7 +91,7 @@ public class User {
         if (finalTrans.size() == 0) {
             //In this case there aren't any transitions avaible
             IO.print(IO.THERE_AREN_T_ANY_TRANSITION_AVAILABLE);
-
+return false;
         } else {
 
 
@@ -98,6 +105,7 @@ public class User {
             pN.calculateNewInitialSituation(newInit);
             IO.showPetriNet(pN);
         }
+        return true;
     }
     /**
      * this method ask to the user which transition he want to use
