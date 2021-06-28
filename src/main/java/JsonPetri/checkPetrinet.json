@@ -1,0 +1,86 @@
+{
+  "@name": "reteControlloPetri",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "a",
+        "@token": 5
+      },
+      "@weight": 1,
+      "@transition": "t1"
+    },
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "a",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t2"
+    },
+    {
+      "@direction": "0",
+      "@place": {
+        "@name": "c",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t1"
+    },
+    {
+      "@direction": "0",
+      "@place": {
+        "@name": "b",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t2"
+    },
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "c",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t3"
+    },
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "b",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t3"
+    },
+    {
+      "@direction": "0",
+      "@place": {
+        "@name": "d",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t3"
+    },
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "d",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t4"
+    },
+    {
+      "@direction": "0",
+      "@place": {
+        "@name": "a",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t4"
+    }
+  ]
+}

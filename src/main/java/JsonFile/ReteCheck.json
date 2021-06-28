@@ -1,0 +1,50 @@
+{
+  "@name": "reteControllo",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": "a",
+      "@transition": "t1"
+    },
+    {
+      "@direction": "1",
+      "@place": "a",
+      "@transition": "t2"
+    },
+    {
+      "@direction": "0",
+      "@place": "c",
+      "@transition": "t1"
+    },
+    {
+      "@direction": "0",
+      "@place": "b",
+      "@transition": "t2"
+    },
+    {
+      "@direction": "1",
+      "@place": "c",
+      "@transition": "t3"
+    },
+    {
+      "@direction": "1",
+      "@place": "b",
+      "@transition": "t3"
+    },
+    {
+      "@direction": "0",
+      "@place": "d",
+      "@transition": "t3"
+    },
+    {
+      "@direction": "1",
+      "@place": "d",
+      "@transition": "t4"
+    },
+    {
+      "@direction": "0",
+      "@place": "a",
+      "@transition": "t4"
+    }
+  ]
+}

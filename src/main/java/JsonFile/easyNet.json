@@ -1,0 +1,25 @@
+{
+  "@name": "reteSemplice",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": "a",
+      "@transition": "t1"
+    },
+    {
+      "@direction": "1",
+      "@place": "a",
+      "@transition": "t2"
+    },
+    {
+      "@direction": "0",
+      "@place": "b",
+      "@transition": "t1"
+    },
+    {
+      "@direction": "0",
+      "@place": "c",
+      "@transition": "t2"
+    }
+  ]
+}

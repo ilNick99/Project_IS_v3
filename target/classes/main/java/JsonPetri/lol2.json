@@ -1,0 +1,33 @@
+{
+  "@name": "nome",
+  "@net": "nome1",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "a",
+        "@token": 0
+      },
+      "@weight": 10,
+      "@transition": "a"
+    },
+    {
+      "@direction": "0",
+      "@place": {
+        "@name": "b",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "a"
+    },
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "c",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "a"
+    }
+  ]
+}

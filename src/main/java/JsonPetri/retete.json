@@ -1,0 +1,41 @@
+{
+  "@name": "te",
+  "@pairs": [
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "a",
+        "@token": 5
+      },
+      "@weight": 2,
+      "@transition": "t1"
+    },
+    {
+      "@direction": "1",
+      "@place": {
+        "@name": "a",
+        "@token": 5
+      },
+      "@weight": 1,
+      "@transition": "t2"
+    },
+    {
+      "@direction": "0",
+      "@place": {
+        "@name": "b",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t1"
+    },
+    {
+      "@direction": "0",
+      "@place": {
+        "@name": "c",
+        "@token": 0
+      },
+      "@weight": 1,
+      "@transition": "t2"
+    }
+  ]
+}
