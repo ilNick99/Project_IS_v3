@@ -158,7 +158,7 @@ public class PetriNet extends Net implements  Simulation{
 
             //we check if there are enough token in the transition, in the opposite case there the transition can't work
             //significa che la transazione non potrà mai scattare
-            if (initialMark.get(i).getNumberOfToken() > initialMark.get(i).getWeight()) {
+            if (initialMark.get(i).getNumberOfToken() >= initialMark.get(i).getWeight()) {
 
                 pairInTheTrans = new ArrayList<>();
 

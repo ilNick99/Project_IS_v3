@@ -92,7 +92,7 @@ class JsonWriter {
 + {static} makeFile() : String
 }
 
-class PetriNet {
+class PetriNet extends Net implements simulation{
 - initalMark: ArrayList<Pair>
 - initalMarking: HashMap<Pair,Integer>
 + PetriNet(Net)
